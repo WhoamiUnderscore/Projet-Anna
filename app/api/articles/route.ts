@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   let article = formToObject<B_NewArticle>(form_data);
 
   const image: FileType = {
-    path: "/images/" + article.image.name,
+    path: "public/images/" + article.image.name,
     content: await toBase64(article.image)
   };
   article.image = "/" + article.image.name;
