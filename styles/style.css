@@ -1,0 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  color: unset;
+  list-style-type: none;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 18px;
+}
+
+body {
+  position: relative;
+}
+
+.chronologie-page-container {
+  background-color: #dda15e;
+  height: 100svh;
+  width: 100vw;
+  overflow: scroll;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.chronologie-element-container {
+  position: relative;
+  margin-left: calc(50vw - 25px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 50vw;
+  transition-property: transform;
+  transition-duration: 1000ms;
+}
+
+.chronologie-element {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #fefae0;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+
+  &:hover::after {
+    width: 70%;
+    height: 70%;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 0%;
+    border-radius: 50%;
+    background: #fefae0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: 
+      width .5s,
+      height .5s;
+  }
+}
+
+.chronologie-element-active {
+  &::after {
+    width: 90%;
+    height: 90%;
+  }
+
+  &:hover::after {
+    width: 90%;
+    height: 90%;
+  }
+}
+
+.chronologie-element div {
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+
+  p:nth-child(1) {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    color: #fefae0;
+    font-weight: bold;
+  }
+
+  p:nth-child(2) {
+    color: #fefae0;
+    font-weight: bold;
+    opacity: .7;
+  }
+}
+
+.prev-link {
+  display: block;
+  width: 47vw;
+  height: 3px;
+  border-radius: 2px;
+  background: white;
+  position: relative;
+  left: -25.5vw;
+  top: 25px;
+  transform: translate(-50%, -50%);
+}
+
+
+.next, .previous {
+  position: absolute;
+  width: 30vw;
+  height: 100svh;
+  right: 0;
+  z-index: 999;
+  background: #DDA15E;
+}
+
+.next {
+  background: -webkit-linear-gradient(90deg, rgba(221, 161, 94, 0) 0%, rgba(221, 161, 94, 1) 90%);
+  background: -moz-linear-gradient(90deg, rgba(221, 161, 94, 0) 0%, rgba(221, 161, 94, 1) 90%);
+  background: linear-gradient(90deg, rgba(221, 161, 94, 0) 0%, rgba(221, 161, 94, 1) 90%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#DDA15E", endColorstr="#DDA15E", GradientType=1);
+}
+
+.previous {
+  left: 0;
+  background: #DDA15E;
+  background: -webkit-linear-gradient(90deg, rgba(221, 161, 94, 1) 0%, rgba(221, 161, 94, 0) 100%);
+  background: -moz-linear-gradient(90deg, rgba(221, 161, 94, 1) 0%, rgba(221, 161, 94, 0) 100%);
+  background: linear-gradient(90deg, rgba(221, 161, 94, 1) 0%, rgba(221, 161, 94, 0) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#DDA15E", endColorstr="#DDA15E", GradientType=1);
+}
