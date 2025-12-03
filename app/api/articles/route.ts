@@ -16,18 +16,19 @@ export async function POST(req: Request) {
   let article = formToObject<B_NewArticle>(form_data);
 
   const image: FileType = {
-    path: "public/images/test.webp",
+    path: "public/images/" + article.image.name,
     content: await toBase64(article.image)
   };
   article.image = "/images/" + article.image.name;
 
 
   const github_manager = new Github();
-  const pushed_pass = github_manager.push_gihtub_files([image]);
+  const pushed_pass = await github_manager.push_gihtub_files([image]);
 
-  console.log(pushed_pass);
+  if ( pushed_pass ) {
+    const new_article = await Article.new(article);
+    return httpResponse(new_article);
+  }
 
-  const new_article = await Article.new(article);
-
-  return httpResponse(new_article);
+  return httpResponse(StatusCode.InternalError);
 }
