@@ -16,10 +16,10 @@ export async function POST(req: Request) {
   let article = formToObject<B_NewArticle>(form_data);
 
   const image: FileType = {
-    path: "public/images/" + article.image.name,
+    path: "public/images/test.webp",
     content: await toBase64(article.image)
   };
-  article.image = "/" + article.image.name;
+  article.image = "/images/" + article.image.name;
 
 
   const github_manager = new Github();
