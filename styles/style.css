@@ -154,6 +154,7 @@ body {
   padding: 20px;
   border: 1px solid lightgrey;
   border-radius: 20px;
+  text-decoration: none;
   
   .image-container {
     width: 100%;
@@ -174,5 +175,15 @@ body {
 
   .article-information-container {
     margin: 10px 0 0 10px;
+    overflow: hidden;
+
+    p {
+      margin-top: 10px;
+      display: -webkit-box;
+      max-width: 3700px;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   }
 }
