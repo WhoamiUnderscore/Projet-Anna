@@ -72,7 +72,6 @@ export default class Chronologie {
 
   static async delete(_id: string): Promise<StatusCode> {
     const delete_chronologie = await chronologie_schema.deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
-    console.log(delete_chronologie);
 
     if ( delete_chronologie.deletedCount === 1 ) {
       return StatusCode.Success;
@@ -81,4 +80,3 @@ export default class Chronologie {
     return StatusCode.NotFound;
   }
 }
-

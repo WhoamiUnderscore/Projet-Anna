@@ -108,6 +108,11 @@ export default class Github {
 
     let treeSHA = await this.create_tree(baseTreeSHA, files)
 
+    if ( treeSHA === baseTreeSHA ) {
+      console.log("GITHUB INFO: Nothing change !")
+      return true
+    }
+
     let createCommit = await this.create_commit(commitSHA, treeSHA)
 
     const pushCommit = await fetch(
@@ -120,7 +125,7 @@ export default class Github {
     )
 
     if ( pushCommit.status === 200 ) {
-      console.log("Push pass !")
+      console.log("GITHUB INFO: Push pass !")
       return true
     }
 

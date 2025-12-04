@@ -1,4 +1,4 @@
-import { type B_ArticleType } from "@/types/article-types"
+import { type F_Article } from "@/types/article-types"
 
 export enum StatusCode {
   // 2--
@@ -17,5 +17,5 @@ export enum StatusCode {
   InternalError = 500
 }
 
-export type B_HttpResponseData = B_ArticleType[]
+export type B_HttpResponseData = F_Article[]
 

@@ -59,5 +59,5 @@ export async function DELETE(req: Request) {
     return httpResponse(delete_chronologie);
   }
 
-  return httpResponse(StatusCode.UnAuthorized);
+  return httpResponse(StatusCode.Unauthorized);
 }

@@ -17,7 +17,7 @@ export default function httpResponse(status: StatusCode, data?: B_HttpResponseDa
       message = "Nous n'avons pas trouver de donnees valide a votre requete."
       break
 
-    case StatusCode.UnAuthorized: 
+    case StatusCode.Unauthorized: 
       message = "Vous n'etes pas authoriser a realiser cette action."
       break
 
