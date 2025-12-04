@@ -1,7 +1,7 @@
 import { type DataFetch, type FetchError } from "@/types/fetch-types";
 
 export default class Fetch<T> {
-  static website_url = "http://127.0.0.1:3000/api";
+  static website_url = "http://localhost:3000/api";
 
   static async getDatas(url: string): Promise<DataFetch | FetchError> {
     const fetching_data = await fetch(`${Fetch.website_url}${url}`);

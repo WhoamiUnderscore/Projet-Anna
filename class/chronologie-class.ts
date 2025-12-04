@@ -12,8 +12,8 @@ export default class Chronologie {
     return chronologie_elements
   }
 
-  static async get(_id: string): Promise<F_ChronologieElement | null> {
-    const chronologie_element = await chronologie_schema.find({ _id: new mongoose.Types.ObjectId(_id) });
+  static async get(name: string): Promise<F_ChronologieElement | null> {
+    const chronologie_element = await chronologie_schema.find({ name });
 
     return chronologie_element
   }

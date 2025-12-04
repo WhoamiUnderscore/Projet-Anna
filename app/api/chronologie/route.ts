@@ -11,13 +11,13 @@ export async function GET(req: Request) {
   await connection();
 
   const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id") || undefined;
+  const name = searchParams.get("name") || undefined;
 
 
   let chronologie_elements;
 
-  if ( id ) {
-    chronologie_elements = await Chronologie.get(id);
+  if ( name ) {
+    chronologie_elements = await Chronologie.get(name);
   } else {
     chronologie_elements = await Chronologie.get_all();
   }

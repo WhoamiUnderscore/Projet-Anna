@@ -3,7 +3,7 @@ export type F_Article = {
   title: string,
   description: string,
   image: string,
-  mouvement_id: string
+  mouvement: string
 }
 
 // Backend
@@ -11,5 +11,5 @@ export type B_NewArticle = {
   title: string,
   description: string,
   image: string,
-  mouvement_id: string
+  mouvement: string
 }

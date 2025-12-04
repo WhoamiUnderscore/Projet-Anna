@@ -13,7 +13,7 @@ const article_schema = new mongoose.Schema({
     type: String,
     required: true
   },
-  mouvement_id: {
+  mouvement: {
     type: String,
     required: true
   },

@@ -5,6 +5,7 @@ import connection from "@/utils/connection";
 import httpResponse from "@/utils/http-response";
 import formToObject from "@/utils/form-to-object";
 import toBase64 from "@/utils/to-base64"
+import isAnImage from "@/utils/is-image"
 
 import { StatusCode } from "@/types/http-response-types"
 import { type F_Article, type B_NewArticle } from "@/types/article-types";
@@ -15,14 +16,14 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id") || undefined;
-  const mouvement_id = searchParams.get("mouvement") || undefined;
+  const mouvement = searchParams.get("mouvement") || undefined;
 
   let article;
 
   if ( id ) {
     article = await Article.get(id);
-  } else if ( mouvement_id ) {
-    article = await Article.get_from_mouvement(mouvement_id);
+  } else if ( mouvement ) {
+    article = await Article.get_from_mouvement(mouvement);
   } else {
     return httpResponse(StatusCode.Unauthorized);
   }
@@ -35,6 +36,10 @@ export async function POST(req: Request) {
 
   let form_data = await req.formData();
   let article = formToObject<B_NewArticle>(form_data);
+
+  if ( !isAnImage(article.image) ) {
+    return httpResponse(StatusCode.Unauthorized);
+  }
 
   if ( !article.image ) return httpResponse(StatusCode.Unauthorized);
 
@@ -60,26 +65,47 @@ export async function PATCH(req: Request) {
   await connection();
 
   let form_data = await req.formData();
-  let article = formToObject<F_Article>(form_data);
+  let update_article = formToObject<F_Article>(form_data);
 
-  if ( typeof article.image !== "string" ) {
+  if ( !isAnImage(update_article.image) ) {
+    return httpResponse(StatusCode.Unauthorized);
+  }
+
+  let article = await Article.get(update_article._id);
+
+  if ( !article ) {
+    return httpResponse(StatusCode.NotFound);
+  }
+  
+  if ( typeof update_article.image !== "string" && `/images/${update_article.image.name}` !== article.image ) {
     const image: FileType = {
-      path: "public/images/" + article.image.name,
-      content: await toBase64(article.image)
+      path: "public/images/" + update_article.image.name,
+      content: await toBase64(update_article.image)
     };
-    article.image = "/images/" + article.image.name;
+    update_article.image = "/images/" + update_article.image.name;
 
+    let image_name = article.image.split("/")[2];
 
     const github_manager = new Github();
+    const delete_file = await github_manager.delete_github_file(image_name)
+
+    if ( !delete_file ) {
+      console.log("GITHUB ERROR: Error deleting file")
+      return httpResponse(StatusCode.InternalError);
+    }
+
     const pushed_pass = await github_manager.push_gihtub_files([image]);
 
     if ( !pushed_pass ) {
+      console.log("GITHUB ERROR: Error pushing file")
       return httpResponse(StatusCode.InternalError);
     }
+  } else if ( `/images/${update_article.image.name}` === article.image ) {
+    update_article.image = article.image
   }
-
-  const update_article = await Article.update(article);
-  return httpResponse(update_article);
+  
+  const updating_article = await Article.update(update_article);
+  return httpResponse(updating_article);
 }
 
 export async function DELETE(req: Request) {
@@ -91,6 +117,17 @@ export async function DELETE(req: Request) {
   if ( !id ) {
     return httpResponse(StatusCode.Unauthorized);
   }
+
+  let article = await Article.get(id);
+
+  if ( !article ) {
+    return httpResponse(StatusCode.NotFound);
+  }
+
+  let image_name = article.image.split("/")[2];
+
+  const github_manager = new Github();
+  const delete_file = await github_manager.delete_github_file(image_name)
 
   const delete_article = await Article.delete(id);
 

@@ -101,6 +101,30 @@ export default class Github {
     return createCommitRef.sha
   }
 
+  private async delete_tree_item(base_tree_sha: string, path: string): Promise<string> {
+    const treeRefRequest = await fetch(
+      `https://api.github.com/repos/${this.repoOwner}/${this.repoName}/git/trees`,
+      {
+        method: "POST",
+        headers: this.headers,
+        body: JSON.stringify({
+          base_tree: base_tree_sha,
+          tree: [
+            {
+              path: path.replace(/^\/+/, ""),
+              mode: "100644",
+              type: "blob",
+              sha: null
+            }
+          ]
+        })
+      }
+    )
+
+    const treeRef = await treeRefRequest.json()
+    return treeRef.sha
+  }
+
   public async push_gihtub_files(files: FileType[]): Promise<boolean> {
     let commitSHA = await this.getBranch()
 
@@ -126,6 +150,32 @@ export default class Github {
 
     if ( pushCommit.status === 200 ) {
       console.log("GITHUB INFO: Push pass !")
+      return true
+    }
+
+    return false
+  }
+
+  public async delete_github_file(file_name: string): Promise<boolean> {
+    let commitSHA = await this.getBranch();
+
+    let baseTreeSHA = await this.getLastCommit(commitSHA);
+
+    let deleteItem = await this.delete_tree_item(baseTreeSHA, `/public/images/${file_name}`);
+
+    let createCommit = await this.create_commit(commitSHA, deleteItem);
+
+    const pushCommit = await fetch(
+      `https://api.github.com/repos/${this.repoOwner}/${this.repoName}/git/refs/heads/${this.branch}`,
+      {
+        method: "PATCH",
+        headers: this.headers,
+        body: JSON.stringify({ sha: createCommit, force: true })
+      }
+    )
+
+    if ( pushCommit.status === 200 ) {
+      console.log("GITHUB INFO: File deleted !")
       return true
     }
 

@@ -6,8 +6,8 @@ import { type F_Article, type B_NewArticle } from "@types/article-types"
 import { StatusCode } from "@/types/http-response-types"
 
 export default class Article {
-  static async get_from_mouvement(mouvement_id: string): Promise<F_Article[]> {
-    const articles = await article_schema.find({ mouvement_id });
+  static async get_from_mouvement(mouvement: string): Promise<F_Article[]> {
+    const articles = await article_schema.find({ mouvement });
 
     return articles
   }
@@ -21,7 +21,7 @@ export default class Article {
   }
 
   static async new(a: B_NewArticle): Promise<StatusCode> {
-    const { title, image, description, mouvement_id } = a;
+    const { title, image, description, mouvement } = a;
 
     const is_article_exist = await Article.exist(title);
 
@@ -33,7 +33,7 @@ export default class Article {
       title,
       description,
       image,
-      mouvement_id
+      mouvement
     });
 
     if ( new_article.__v !== null || new_article.__v !== undefined ) {
@@ -54,7 +54,7 @@ export default class Article {
   }
 
   static async update(a: F_Article): Promise<StatusCode> {
-    const { _id, title, description, image, mouvement_id } = a;
+    const { _id, title, description, image, mouvement } = a;
 
     const update_article = await article_schema.findOneAndUpdate(
       { _id: new mongoose.Types.ObjectId(_id) },
@@ -62,7 +62,7 @@ export default class Article {
         title, 
         description,
         image,
-        mouvement_id
+        mouvement
       },
       {
         includeResultMetadata: true
