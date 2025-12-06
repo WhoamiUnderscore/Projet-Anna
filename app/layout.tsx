@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "@/styles/animations.css"
 import "@/styles/style.css"
 
 export const metadata: Metadata = {

@@ -1,7 +1,8 @@
 export type F_Article = {
   _id: string,
   title: string,
-  description: string,
+  artiste: string,
+  date: number,
   image: string,
   mouvement: string
 }
@@ -9,7 +10,8 @@ export type F_Article = {
 // Backend
 export type B_NewArticle = {
   title: string,
-  description: string,
+  artiste: string,
+  date: number,
   image: string,
   mouvement: string
 }

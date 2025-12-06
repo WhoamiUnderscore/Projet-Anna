@@ -3,8 +3,3 @@ export type DataFetch<T> = {
   message: string,
   status: number
 }
-
-export type FetchError = {
-  message: string,
-  status: number
-}

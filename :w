@@ -25,9 +25,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  pointer-events: none;
-  animation: prevent-mouse .1s forwards;
-  animation-delay: 2s;
 }
 
 .chronologie-element-container {
@@ -48,7 +45,7 @@ body {
   border-radius: 50%;
   position: relative;
   cursor: pointer;
-  animation: chronologie-pop .8s cubic-bezier(1, 0, 0, 2) forwards;
+  animation: chronologie-pop 5s linear;
 
   &:hover::after {
     width: 70%;
@@ -72,7 +69,6 @@ body {
 }
 
 .chronologie-element-active {
-
   &::after {
     width: 90%;
     height: 90%;
@@ -91,8 +87,7 @@ body {
   transform: translateX(-50%);
   text-align: center;
   opacity: 0;
-  animation: chronologie-name-appear 1s linear forwards;
-  animation-delay: 1.2s;
+  transform: opacity .3s;
 
   p:nth-child(1) {
     font-size: 1.5rem;
@@ -110,16 +105,14 @@ body {
 
 .prev-link {
   display: block;
+  width: 47vw;
   height: 3px;
   border-radius: 2px;
   background: white;
   position: relative;
-  left: -49vw;
+  left: -25.5vw;
   top: 25px;
-  transform: translateY(-50%);
-  opacity: 0;
-  animation: chronologie-appear .5s linear forwards;
-  animation-delay: 1s;
+  transform: translate(-50%, -50%);
 }
 
 

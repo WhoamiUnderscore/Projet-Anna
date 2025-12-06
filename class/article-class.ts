@@ -7,7 +7,8 @@ import { StatusCode } from "@/types/http-response-types"
 
 export default class Article {
   static async get_from_mouvement(mouvement: string): Promise<F_Article[]> {
-    const articles = await article_schema.find({ mouvement });
+    const mouvement_name = mouvement.charAt(0).toUpperCase() + mouvement.slice(1);
+    const articles = await article_schema.find({ mouvement: mouvement_name });
 
     return articles
   }
@@ -21,7 +22,7 @@ export default class Article {
   }
 
   static async new(a: B_NewArticle): Promise<StatusCode> {
-    const { title, image, description, mouvement } = a;
+    const { title, image, artiste, date, mouvement } = a;
 
     const is_article_exist = await Article.exist(title);
 
@@ -31,7 +32,8 @@ export default class Article {
 
     const new_article = await article_schema.create({
       title,
-      description,
+      artiste,
+      date,
       image,
       mouvement
     });
@@ -54,13 +56,14 @@ export default class Article {
   }
 
   static async update(a: F_Article): Promise<StatusCode> {
-    const { _id, title, description, image, mouvement } = a;
+    const { _id, title, artiste, date, image, mouvement } = a;
 
     const update_article = await article_schema.findOneAndUpdate(
       { _id: new mongoose.Types.ObjectId(_id) },
       {
         title, 
-        description,
+        artiste,
+        date,
         image,
         mouvement
       },

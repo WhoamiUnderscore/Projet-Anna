@@ -1,0 +1,39 @@
+@keyframes prevent-mouse {
+  from {
+    pointer-events: none;
+  }
+  to {
+    pointer-events: auto;
+  }
+}
+
+@keyframes chronologie-pop {
+  from {
+    width: 0px;
+    height: 0px;
+  }
+  to {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@keyframes chronologie-appear {
+  from {
+    opacity: 0;
+    width: 0;
+  }
+  to {
+    opacity: 1;
+    width: 48vw;
+  }
+}
+
+@keyframes chronologie-name-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -8,7 +8,7 @@ export default function ArticleComponent({ article }: { article: F_Article} ) {
     </div>
     <section className="article-information-container">
       <h3>{article.title}</h3>
-      <p>{article.description}</p>
+      <p>{article.artiste} - {article.date}</p>
     </section>
   </a>
 }
