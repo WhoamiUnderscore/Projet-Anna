@@ -3,6 +3,8 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 
+import { ErrorHandlerContext } from "@/hook/useErrorHandler"
+
 import { type B_NewChronologie } from "@/types/chronologie-types"
 
 const website_url = "http://localhost:3000/api"
@@ -17,6 +19,7 @@ export default function useFetch<T>(url?: string){
   });
 
   const router = useRouter();
+  const { addError } = React.useContext(ErrorHandlerContext);
 
   React.useEffect(() => {
     if ( !url ) return 
@@ -24,6 +27,9 @@ export default function useFetch<T>(url?: string){
     async function getDatas() {
       const fetching_data = await fetch(`${website_url}${url}`);
       const body = await fetching_data.json();
+
+      addError(body)
+
       setFetchResult(body)
       setLoading(false)
     }
@@ -42,6 +48,30 @@ export default function useFetch<T>(url?: string){
         body: form_data
       });
       const body = await request.json();
+      addError(body)
+
+      setFetchResult(body)
+
+    } catch (error) {
+      console.error(`ERROR POST: ${error}`)
+
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function updateData<T>(data: T, url: string) {
+    setLoading(true)
+
+    try {
+      const form_data = createFormData<T>(data);
+
+      const request = await fetch(`${website_url}${url}`, {
+        method: "PATCH",
+        body: form_data
+      });
+      const body = await request.json();
+      addError(body)
 
       setFetchResult(body)
 
@@ -77,6 +107,7 @@ export default function useFetch<T>(url?: string){
         method: "DELETE",
       });
       const body = await request.json();
+      addError(body)
 
       setFetchResult(body)
 
@@ -88,5 +119,5 @@ export default function useFetch<T>(url?: string){
     }
   }
 
-  return { loading, fetchResult, postDatas, deleteData }
+  return { loading, fetchResult, postDatas, deleteData, updateData }
 }

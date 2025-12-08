@@ -56,6 +56,12 @@ export default class Chronologie {
   static async update(c: F_ChronologieElement): Promise<StatusCode> {
     const { _id, name, from, to } = c;
 
+    let is_chronologie_exist = await Chronologie.exist(name);
+
+    if ( is_chronologie_exist ) {
+      return StatusCode.Conflic
+    }
+
     const update_chronologie = await chronologie_schema.findOneAndUpdate(
       { _id: new mongoose.Types.ObjectId(_id) },
       {

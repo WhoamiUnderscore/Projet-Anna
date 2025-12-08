@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+
+import { ErrorHandlerProvider } from "@/hook/useErrorHandler"
+
 import "@/styles/animations.css"
 import "@/styles/style.css"
 
@@ -11,6 +14,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
+
   return (
     <html lang="fr">
       {/* <body className={`${geistSans.variable} ${geistMono.variable}`}> */}
@@ -18,7 +23,9 @@ export default function RootLayout({
       {/* </body> */}
 
       <body>
+        <ErrorHandlerProvider>
         {children}
+        </ErrorHandlerProvider>
       </body>
     </html>
   );

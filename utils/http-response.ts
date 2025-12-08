@@ -1,7 +1,10 @@
-import { B_HttpResponseData, StatusCode } from "@/types/http-response-types"
-import { NextResponse } from "next/server"
+import mongoose from "mongoose";
+
+import { B_HttpResponseData, StatusCode } from "@/types/http-response-types";
+import { NextResponse } from "next/server";
 
 export default function httpResponse(status: StatusCode, data?: B_HttpResponseData) {
+  let id = new  mongoose.Types.ObjectId().toString();
   let message = "";
 
   switch ( status ) {
@@ -39,6 +42,7 @@ export default function httpResponse(status: StatusCode, data?: B_HttpResponseDa
 
   return NextResponse.json(
     {
+      id,
       data,
       status, 
       message

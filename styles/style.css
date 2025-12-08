@@ -67,7 +67,7 @@ body {
   align-items: center;
 }
 
-.new-element-name {
+.new-element-name, .update-element-name {
   outline: 0;
   border: 0;
   background: transparent;
@@ -79,14 +79,14 @@ body {
   max-width: 300px;
 }
 
-.new-element-date-container {
+.new-element-date-container, .update-element-date-container {
   display: flex;
   flex-direction: row !important;
   align-items: center;
   gap: 10px;
   margin: 10px 0;
 
-  .new-element-date {
+  .new-element-date, .update-element-date {
     width: 80px;
     outline: 0;
     border: 0;
@@ -101,7 +101,7 @@ body {
   }
 }
 
-.new-chronologie-button {
+.new-chronologie-button, .update-element-button {
   padding: 4px 12px;
   font-size: .9rem;
   text-transform: uppercase;
@@ -123,6 +123,38 @@ body {
 
 .new-chronologie-button-appear {
   opacity: 1;
+}
+
+.close-chronologie-edit {
+  position: absolute;
+  top: 0;
+  left: -35px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: 0;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: rotate(45deg);
+    width: 100%;
+    height: 2px;
+    background: red;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: rotate(-45deg);
+    width: 100%;
+    height: 2px;
+    background: red;
+  }
 }
 
 .chronologie-element {
@@ -186,6 +218,9 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  opacity: 0;
+  animation: chronologie-name-appear 1s linear forwards;
+  animation-delay: 1.2s;
 
   span {
     cursor: pointer;
@@ -218,7 +253,7 @@ body {
   width: 30vw;
   height: 100svh;
   right: 0;
-  z-index: 999;
+  z-index: 99;
   background: #DDA15E;
 }
 
@@ -303,3 +338,32 @@ body {
   border: 1px solid lightgrey;
   margin-bottom: 30px;
 }
+
+/* Error Handler */
+.fetch-return {
+  position: absolute;
+  top: 20px;
+  right: -100%;
+  opacity: 0;
+  animation: error-appear .4s ease-out forwards;
+  -webkit-animation-name: error-appear, error-disappear;
+  -webkit-animation-duration: .3s, .5s;
+  -webkit-animation-delay: 0s, 4.5s;
+  max-width: 30vw;
+  height: 70px;
+  padding: 10px 15px;
+  text-align: end;
+  border-radius: 20px;
+  font-weight: 550;
+  font-size: .9rem;
+  z-index: 999;
+  transition: top .3s;
+}
+
+.success-return {
+  border: 2px solid #386641;
+  color: #386641;
+  background: #6a994e;
+  box-shadow: rgba(163, 177, 138, 0.2) 0px 8px 24px;
+}
+

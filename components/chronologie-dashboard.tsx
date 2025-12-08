@@ -4,9 +4,9 @@ import * as REACT from "react"
 
 import useFetch from "@/hook/useFetch";
 
-import { type B_NewChronologie } from "@/types/chronologie-types"
+import { type F_Chronologie, type B_NewChronologie } from "@/types/chronologie-types"
 
-export default function ChronologieDashboard({currentState, elementsLength } : { currentState: number, elementsLength: number}) {
+export function NewChronologie({currentState, elementsLength } : { currentState: number, elementsLength: number}) {
   const [newElement, setNewElement] = REACT.useState<B_NewChronologie>({
     name: "",
     from: 0,
@@ -52,6 +52,50 @@ export default function ChronologieDashboard({currentState, elementsLength } : {
         <button className={`new-chronologie-button ${verifyCondition() ? "new-chronologie-button-appear" : ""}`} onClick={() => postDatas(newElement, "/chronologie")}>Valider</button>
       </div>
     </li>
-
   )
 }
+
+export function UpdateChronologie({ element, is_first, setState }: { element: F_Chronologie, is_first: boolean, setState: () => void }) {
+  const [updatedElement, setUpdatedElement] = REACT.useState(element);
+
+  const { updateData } = useFetch();
+
+  return (
+    <li className="chronologie-element-container new-element">
+      <span className="chronologie-element chronologie-element-active" style={{ animationName: "unset !important"}}></span>
+
+      {
+        !is_first && <span className="prev-link"></span>
+      }
+
+      <div>
+        <input className="update-element-name" placeholder="Nouvelle element" value={updatedElement.name} onChange={(e) => {
+          setUpdatedElement((prev) => ({
+            ...prev,
+            name: e.target.value
+          }))
+        }}/>
+        <div className="update-element-date-container">
+          <input className="update-element-date" style={{ textAlign: "end" }} type="text" inputMode="numeric" pattern="[0-9]*" placeholder="XXXX" value={updatedElement.from} onChange={(e) => {
+            const onlyNumbers = e.target.value.replace(/\D/g, "");
+            setUpdatedElement((prev) => ({
+              ...prev,
+              from: Number(onlyNumbers)
+            }))
+          }}/> 
+          <span style={{ color: "#fefae0", opacity: ".4"}}>-</span>
+          <input className="update-element-date" type="text" inputMode="numeric" pattern="[0-9]*" placeholder="XXXX" value={updatedElement.to} onChange={(e) => {
+            const onlyNumbers = e.target.value.replace(/\D/g, "");
+            setUpdatedElement((prev) => ({
+              ...prev,
+              to: Number(onlyNumbers)
+            }))
+          }}/> 
+        </div>
+        <button className="close-chronologie-edit" onClick={() => setState(false)}></button>
+        <button className="update-element-button" style={{ opacity: 1 }} onClick={() => updateData(updatedElement, "/chronologie")}>Valider</button>
+      </div>
+    </li>
+  )
+}
+
