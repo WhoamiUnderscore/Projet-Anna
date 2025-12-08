@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import Article from "@/class/article-class.ts"
+
 import chronologie_schema from "@/models/chronologie-model";
 
 import { type B_NewChronologie, type F_ChronologieElement } from "@/types/chronologie-types";
@@ -7,7 +9,8 @@ import { StatusCode } from "@/types/http-response-types"
 
 export default class Chronologie {
   static async get_all(): Promise<F_ChronologieElement[]> {
-    const chronologie_elements = await chronologie_schema.find({ });
+    let chronologie_elements = await chronologie_schema.find({ });
+    chronologie_elements = chronologie_elements.sort((a, b) => a.from - b.from);
 
     return chronologie_elements
   }
@@ -71,6 +74,16 @@ export default class Chronologie {
   }
 
   static async delete(_id: string): Promise<StatusCode> {
+    const chronologie_name = await chronologie_schema.findOne({ _id: new mongoose.Types.ObjectId(_id)}).select("name");
+    const all_articles_with_chronologie_name = await Article.get_from_mouvement(chronologie_name.name);
+
+    all_articles_with_chronologie_name.forEach(async (el) => {
+      const request = await Article.delete(el._id);
+      if ( request !== StatusCode.Success) {
+        return StatusCode.InternalError;
+      }
+    })
+
     const delete_chronologie = await chronologie_schema.deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
 
     if ( delete_chronologie.deletedCount === 1 ) {

@@ -6,11 +6,20 @@
   color: unset;
   list-style-type: none;
   box-sizing: border-box;
+  text-decoration: none;
 }
 
-html {
+html, input, button {
   font-size: 18px;
   font-family: "Outfit", sans-serif;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
 }
 
 body {
@@ -30,15 +39,90 @@ body {
   animation-delay: 2s;
 }
 
-.chronologie-element-container {
+.chronologie-container {
   position: relative;
   margin-left: calc(50vw - 25px);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   gap: 50vw;
   transition-property: transform;
   transition-duration: 1000ms;
+}
+
+.chronologie-element-container {
+  max-width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+}
+
+.new-element div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.new-element-name {
+  outline: 0;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  color: #fefae0;
+  font-weight: bold;
+  max-width: 300px;
+}
+
+.new-element-date-container {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+
+  .new-element-date {
+    width: 80px;
+    outline: 0;
+    border: 0;
+    background: transparent;
+    color: #fefae0;
+    font-weight: bold;
+    opacity: .7;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+  }
+}
+
+.new-chronologie-button {
+  padding: 4px 12px;
+  font-size: .9rem;
+  text-transform: uppercase;
+  background: transparent;
+  border: 2px solid #fefae0;
+  color: #fefae0;
+  font-weight: 600;
+  border-radius: 10px;
+  opacity: 0;
+  transition: color .2s,
+              background .2s,
+              opacity .3s;
+
+  &:hover {
+    background: #fefae0;
+    color: #dda15e;
+  }
+}
+
+.new-chronologie-button-appear {
+  opacity: 1;
 }
 
 .chronologie-element {
@@ -72,23 +156,13 @@ body {
 }
 
 .chronologie-element-active {
-
   &::after {
-    width: 90%;
-    height: 90%;
-  }
-
-  &:hover::after {
     width: 90%;
     height: 90%;
   }
 }
 
-.chronologie-element div {
-  position: absolute;
-  top: 120%;
-  left: 50%;
-  transform: translateX(-50%);
+.chronologie-element-container div {
   text-align: center;
   opacity: 0;
   animation: chronologie-name-appear 1s linear forwards;
@@ -108,12 +182,28 @@ body {
   }
 }
 
+.chronologie-dashboard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  span {
+    cursor: pointer;
+    opacity: .4;
+    transition: opacity .4s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
 .prev-link {
   display: block;
   height: 3px;
   border-radius: 2px;
   background: white;
-  position: relative;
+  position: absolute;
   left: -49vw;
   top: 25px;
   transform: translateY(-50%);

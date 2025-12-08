@@ -1,10 +1,13 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
+
+import { type B_NewChronologie } from "@/types/chronologie-types"
 
 const website_url = "http://localhost:3000/api"
 
-export default function useFetch<T>(url: string){
+export default function useFetch<T>(url?: string){
   const [loading, setLoading] = React.useState(true);
 
   const [fetchResult, setFetchResult] = React.useState<DataFetch<T>>({
@@ -13,18 +16,77 @@ export default function useFetch<T>(url: string){
     message: null
   });
 
+  const router = useRouter();
+
   React.useEffect(() => {
+    if ( !url ) return 
+
     async function getDatas() {
       const fetching_data = await fetch(`${website_url}${url}`);
       const body = await fetching_data.json();
-      console.log(body)
       setFetchResult(body)
       setLoading(false)
     }
 
-
     getDatas();
   }, [])
 
-  return { loading, fetchResult }
+  async function postDatas<T>(data: T, url: string ) {
+    setLoading(true)
+
+    try {
+      const form_data = createFormData<T>(data);
+
+      const request = await fetch(`${website_url}${url}`, {
+        method: "POST",
+        body: form_data
+      });
+      const body = await request.json();
+
+      setFetchResult(body)
+
+    } catch (error) {
+      console.error(`ERROR POST: ${error}`)
+
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function createFormData<T>(data: T): FormData {
+    let form_data = new FormData();
+    
+    for ( const key in data ) {
+      let value: any = data[key]
+
+      if ( typeof value === "object" && value instanceof File) {
+        form_data.append(key, JSON.stringify(value))
+      } else if ( typeof value === "string" || typeof value === "number") {
+        form_data.append(key, value)
+      }
+    }
+
+    return form_data
+  }
+
+  async function deleteData(url: string) {
+    setLoading(true)
+
+    try {
+      const request = await fetch(`${website_url}${url}`, {
+        method: "DELETE",
+      });
+      const body = await request.json();
+
+      setFetchResult(body)
+
+    } catch (error) {
+      console.error(`ERROR POST: ${error}`)
+
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return { loading, fetchResult, postDatas, deleteData }
 }
