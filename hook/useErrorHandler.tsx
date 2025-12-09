@@ -19,9 +19,6 @@ export function ErrorHandlerProvider({children}) {
     }, 5000);
   }
 
-  React.useEffect(() => console.log(errors), [errors])
-
-
   return <ErrorHandlerContext.Provider value={{ errors, addError }}>
     {
       errors.map((el, i) => (

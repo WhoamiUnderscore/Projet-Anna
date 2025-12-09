@@ -30,7 +30,7 @@ body {
   background-color: #dda15e;
   height: 100svh;
   width: 100vw;
-  overflow: scroll;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -194,7 +194,7 @@ body {
   }
 }
 
-.chronologie-element-container div {
+.chronologie-info {
   text-align: center;
   opacity: 0;
   animation: chronologie-name-appear 1s linear forwards;
@@ -273,6 +273,56 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#DDA15E", endColorstr="#DDA15E", GradientType=1);
 }
 
+.pop-up-delete-chronologie {
+  color: #fefae0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  p {
+    width: 300px;
+    text-align: center;
+  }
+
+  .pop-up-button-container {
+    display: flex;
+    gap: 5px;
+
+
+    button {
+      padding: 4px 12px;
+      font-size: .9rem;
+      text-transform: uppercase;
+      background: transparent;
+      border: 2px solid #fefae0;
+      color: #fefae0;
+      font-weight: 600;
+      border-radius: 10px;
+      opacity: 1;
+      transition: color .2s,
+        background .2s,
+        opacity .3s;
+
+      &:hover {
+        background: #fefae0;
+        color: #dda15e;
+      }
+
+      &:nth-child(1) {
+        border: 2px solid #d90429;
+        color: #d90429;
+
+        &:hover {
+          background: #d90429;
+          color: #fefae0;
+        }
+      }
+    }
+  }
+}
+
 /* Article */
 .articles-page {
   background: #fdfffc;
@@ -349,8 +399,7 @@ body {
   -webkit-animation-name: error-appear, error-disappear;
   -webkit-animation-duration: .3s, .5s;
   -webkit-animation-delay: 0s, 4.5s;
-  max-width: 30vw;
-  height: 70px;
+  max-width: 70vw;
   padding: 10px 15px;
   text-align: end;
   border-radius: 20px;
@@ -358,12 +407,20 @@ body {
   font-size: .9rem;
   z-index: 999;
   transition: top .3s;
+  pointer-events: none;
 }
 
 .success-return {
   border: 2px solid #386641;
   color: #386641;
   background: #6a994e;
+  box-shadow: rgba(163, 177, 138, 0.2) 0px 8px 24px;
+}
+
+.error-return {
+  border: 2px solid #780000;
+  color: #780000;
+  background: #c1121f;
   box-shadow: rgba(163, 177, 138, 0.2) 0px 8px 24px;
 }
 

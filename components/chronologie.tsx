@@ -50,6 +50,7 @@ export default function Chronologie({ elements, dashboard }: Props) {
 
 function ChronologieElement({ element, index, currentState, dashboard }: { element: F_ChronologieElement, index: number, currentState: number, dashboard: boolean }) {
   const [updateElement, setUpdateElement] = REACT.useState(false);
+  const [deleteElement, setDeleteElement] = REACT.useState(false)
   const { deleteData } = useFetch();
 
   if ( updateElement ) {
@@ -61,17 +62,32 @@ function ChronologieElement({ element, index, currentState, dashboard }: { eleme
     {
       index > 0 && <span className="prev-link"></span>
     }
-    <a href={`/${element.name.toLowerCase()}`}>
-    <div>
+
+    {
+      !deleteElement && <a href={`/${element.name.toLowerCase()}`}>
+    <div className="chronologie-info">
       <p>{element.name}</p>
       <p>{element.from} - {element.to}</p>
     </div>
     </a>
+    }
 
     {
-      dashboard && <section className="chronologie-dashboard">
+      // Delete and Edit button
+      !deleteElement && dashboard && <section className="chronologie-dashboard">
         <span style={{color: ""}} onClick={() => setUpdateElement(true)}><FontAwesomeIcon icon={faPenToSquare} /></span>        
-        <span style={{color: "#d90429"}} onClick={() => deleteData(`/chronologie?id=${element._id}`)}><FontAwesomeIcon icon={faTrash} /></span>        
+        <span style={{color: "#d90429"}} onClick={() => setDeleteElement(true)}><FontAwesomeIcon icon={faTrash} /></span>        
+      </section>
+    }
+
+    {
+      deleteElement && <section className="pop-up-delete-chronologie">
+        <p>Est tu sur de vouloir supprimer le mouvement <strong>{element.name}</strong> ?</p>
+
+        <div className="pop-up-button-container">
+          <button className="delete-button" onClick={() => deleteData(`/chronologie?id=${element._id}`)}>Supprimer</button>
+          <button className="return-button" onClick={() => setDeleteElement(false)}>Annuler</button>
+        </div>
       </section>
     }
   </li>

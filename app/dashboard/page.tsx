@@ -12,12 +12,7 @@ export default function DashboardPage() {
 
   return (
     <main>
-      {
-        fetchResult.status === 200 && fetchResult.data.length > 0 ?
-          <Chronologie elements={fetchResult.data} dashboard={true}/>
-          : 
-          <p>erreur</p>
-      }
+      <Chronologie elements={fetchResult.data} dashboard={true}/>
     </main>
   );
 }

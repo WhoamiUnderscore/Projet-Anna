@@ -24,7 +24,9 @@ export function NewChronologie({currentState, elementsLength } : { currentState:
   return (
     <li className="chronologie-element-container new-element">
       <span className={`chronologie-element ${currentState === elementsLength ? "chronologie-element-active" : ""}`}></span>
-      <span className="prev-link"></span>
+      {
+        elementsLength > 0 && <span className="prev-link"></span>
+      }
       <div>
         <input className="new-element-name" placeholder="Nouvelle element" value={newElement.name} onChange={(e) => {
           setNewElement((prev) => ({
