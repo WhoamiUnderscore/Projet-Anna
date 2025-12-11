@@ -21,6 +21,10 @@ const article_schema = new mongoose.Schema({
     type: String,
     required: true
   },
+  content: {
+    type: String,
+    required: false
+  },
 }, { strict: true })
 
 export default mongoose.models["Articles"] || mongoose.model("Articles", article_schema);

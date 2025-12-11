@@ -22,7 +22,7 @@ export default class Article {
   }
 
   static async new(a: B_NewArticle): Promise<StatusCode> {
-    const { title, image, artiste, date, mouvement } = a;
+    const { title, image, artiste, date, mouvement, content } = a;
 
     const is_article_exist = await Article.exist(title);
 
@@ -35,7 +35,8 @@ export default class Article {
       artiste,
       date,
       image,
-      mouvement
+      mouvement,
+      content
     });
 
     if ( new_article.__v !== null || new_article.__v !== undefined ) {
@@ -56,7 +57,7 @@ export default class Article {
   }
 
   static async update(a: F_Article): Promise<StatusCode> {
-    const { _id, title, artiste, date, image, mouvement } = a;
+    const { _id, title, artiste, date, image, mouvement, content} = a;
 
     const update_article = await article_schema.findOneAndUpdate(
       { _id: new mongoose.Types.ObjectId(_id) },
@@ -65,7 +66,8 @@ export default class Article {
         artiste,
         date,
         image,
-        mouvement
+        mouvement,
+        content
       },
       {
         includeResultMetadata: true

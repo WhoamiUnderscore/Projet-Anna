@@ -14,13 +14,18 @@ type UpdateType = {
   updated: boolean
 }
 
-export default function useEditor() {
+type Props = {
+  default_content?: string
+}
+
+export default function useEditor(props: Props) {
   // =====
   // Init Values
   // =====
   const [blocks, setBlocks] = useState<BlockType[]>([]);
   const [editorValue, setEditorValue] = useState<string>("");
   const [updateValue, setUpdateValue] = useState<UpdateType | null>(null);
+  const [allFiles, setAllFiles] = useState<File[]>([])
 
   const container_ref = useRef<HTMLSectionElement>(null);
   const file_input_ref = useRef<HTMLTextAreaElement>(null);
@@ -86,6 +91,8 @@ export default function useEditor() {
 
     const file = file_input_ref.current.files[0];
 
+    setAllFiles((prev) => [...prev, file]);
+
     const imageURL = URL.createObjectURL(file);
     const markdown = `![text alternatif](${imageURL})`;
     const render = `<img src="${imageURL}" />`
@@ -133,5 +140,14 @@ export default function useEditor() {
     update_textarea_ref.current.addEventListener("focusout", () => reCreateBlockFromUpdate(update_textarea_ref.current.value))
   }, [container_ref, updateValue, update_textarea_ref])
 
-  return { blocks, editorValue, updateValue, container_ref, file_input_ref, update_textarea_ref, handleChange, handleUpdateChange, handleFile, createUpdateValue}
+  useEffect(() => {
+    if ( !props || !props.default_content ) return
+
+  }, [props])
+
+  function updateBlocks(value: BlockType) {
+    setBlocks((prev) => [...prev, value])
+  }
+
+  return { blocks, editorValue, updateValue, container_ref, file_input_ref, update_textarea_ref, handleChange, handleUpdateChange, handleFile, createUpdateValue, allFiles, updateBlocks }
 }

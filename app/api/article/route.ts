@@ -37,8 +37,6 @@ export async function POST(req: Request) {
   let form_data = await req.formData();
   let article = formToObject<B_NewArticle>(form_data);
 
-  console.log(form_data.get("image"))
-
   if ( !isAnImage(article.image) ) {
     return httpResponse(StatusCode.Unauthorized);
   }
