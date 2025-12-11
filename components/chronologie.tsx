@@ -64,7 +64,7 @@ function ChronologieElement({ element, index, currentState, dashboard }: { eleme
     }
 
     {
-      !deleteElement && <a href={ dashboard ? `/dashboard/mouvements/${element.name.toLowerCase()}` : `/${element.name.toLowerCase()}`}>
+      !deleteElement && <a href={ dashboard ? `/dashboard/mouvements/${element.name.toLowerCase()}` : `/mouvements/${element.name.toLowerCase()}`}>
         <div className="chronologie-info">
           <p>{element.name}</p>
           <p>{element.from} - {element.to}</p>

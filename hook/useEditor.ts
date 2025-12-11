@@ -36,6 +36,9 @@ export default function useEditor(props: Props) {
   // Functions
   // ======
   function handleChange(event: Event) {
+    const input = event.target;
+    input.style.height = `${input.scrollHeight}px`
+
     const value = event.target.value;
     const last_letter = value[value.length - 1];
 
@@ -59,6 +62,10 @@ export default function useEditor(props: Props) {
   } 
 
   function handleUpdateChange(event: Event) {
+    const input = event.target;
+
+    input.style.height = `${input.scrollHeight}px`
+
     const value = event.target.value;
     const last_letter = value[value.length - 1];
 
@@ -136,6 +143,7 @@ export default function useEditor(props: Props) {
       ...prev,
       updated: true
     }))
+    update_textarea_ref.current.style.height = `${update_textarea_ref.current.scrollHeight}px`
 
     update_textarea_ref.current.addEventListener("focusout", () => reCreateBlockFromUpdate(update_textarea_ref.current.value))
   }, [container_ref, updateValue, update_textarea_ref])

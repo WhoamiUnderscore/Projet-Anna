@@ -52,7 +52,7 @@ export default function ArticlePage(){
     })
   }, [fetchResult])
     
-  return <main>
+  return <main className={"article-page"}>
       <section className={`renderer-section`} ref={editor.container_ref}>
         {
           editor.blocks.map((value, i) => (
@@ -70,7 +70,7 @@ export default function ArticlePage(){
           editor.updateValue && <textarea id={`update-${editor.updateValue.id}`} className={`text-editor`} value={editor.updateValue.value} onChange={(e) => editor.handleUpdateChange(e)} ref={editor.update_textarea_ref}></textarea>
         }
       </section>
-      <textarea className={`text-editor`} value={editor.editorValue} onChange={editor.handleChange}>
+      <textarea className={`text-editor`} placeholder={"Entre ton texte ici"} value={editor.editorValue} onChange={editor.handleChange}>
       </textarea>
       <input type="file" ref={editor.file_input_ref}/>
       <button onClick={() => editor.handleFile()}>Add Image</button>

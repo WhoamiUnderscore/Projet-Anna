@@ -13,6 +13,7 @@ export default function UpdateArticles() {
   const { loading, fetchResult } = useFetch<F_Article>(`/article?mouvement=${params.mouvement}`)
 
   const [currentArticles, setCurrentArticles] = React.useState<F_Article[]>(null)
+
   React.useEffect(() => {
     if ( loading ) return  
     
@@ -32,7 +33,7 @@ export default function UpdateArticles() {
 
     }
   }, [loading, fetchResult])
-  return <main>
+  return <main className="articles-page">
     <ul className="articles-page-container">
       {
         currentArticles === null ?

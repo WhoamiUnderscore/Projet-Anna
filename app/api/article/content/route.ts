@@ -38,11 +38,13 @@ export async function PATCH(req: Request) {
 
   for(let i = 0; i < image_number; i++ ){
     const img = form_data.get(`image-${i}`);
-    images.push({
-      name: img.name,
-      path: "/public/images/" + img.name,
-      content: await toBase64(img)
-    })
+    if ( img && isAnImage(img) ) {
+      images.push({
+        name: img.name,
+        path: "/public/images/" + img.name,
+        content: await toBase64(img)
+      })
+    }
   }
 
 
@@ -52,7 +54,6 @@ export async function PATCH(req: Request) {
   let index = 0;
   const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
   const content_parsed = content.replace(imageRegex, (match, alt, url, offset) => {
-    console.log(url, url.includes("blob"))
     if ( !url.includes("blob") ) return `![${alt}](${url})`;
     const newUrl = `/images/${images[index].name}`;
     index++
@@ -60,28 +61,34 @@ export async function PATCH(req: Request) {
     return `![${alt}](${newUrl})`;
   })
 
-  const github_manager = new Github();
-  const pushed_pass = await github_manager.push_gihtub_files([...images]);
+  if ( images.length > 0 ) {
+    const github_manager = new Github();
+    const pushed_pass = await github_manager.push_gihtub_files([...images]);
 
-  if ( pushed_pass ) {
-    const { title, artiste, image, date, mouvement } = article;
-    const update_article = await article_schema.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(id) },
-      {
-        title,
-        artiste,
-        image,
-        date,
-        mouvement,
-        content: content_parsed
-      },
-      {
-        includeResultMetadata: true
-      }
-    );
-
-    if ( update_article.ok && update_article.value !== null ) return httpResponse(StatusCode.Success)
+    if ( !pushed_pass ) {
+      console.error("ERROR GITHUB: Error pushing file")
+      return httpResponse(StatusCode.InternalError)
+    }
   }
+
+  const { title, artiste, image, date, mouvement } = article;
+
+  const update_article = await article_schema.findOneAndUpdate(
+    { _id: new mongoose.Types.ObjectId(id) },
+    {
+      title,
+      artiste,
+      image,
+      date,
+      mouvement,
+      content: content_parsed
+    },
+    {
+      includeResultMetadata: true
+    }
+  );
+
+  if ( update_article.ok && update_article.value !== null ) return httpResponse(StatusCode.Success)
 
   return httpResponse(StatusCode.InternalError)
 }
