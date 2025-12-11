@@ -64,12 +64,12 @@ function ChronologieElement({ element, index, currentState, dashboard }: { eleme
     }
 
     {
-      !deleteElement && <a href={`/${element.name.toLowerCase()}`}>
-    <div className="chronologie-info">
-      <p>{element.name}</p>
-      <p>{element.from} - {element.to}</p>
-    </div>
-    </a>
+      !deleteElement && <a href={ dashboard ? `/dashboard/${element.name.toLowerCase()}` : `/${element.name.toLowerCase()}`}>
+        <div className="chronologie-info">
+          <p>{element.name}</p>
+          <p>{element.from} - {element.to}</p>
+        </div>
+      </a>
     }
 
     {

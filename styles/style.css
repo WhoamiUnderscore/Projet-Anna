@@ -345,6 +345,7 @@ body {
   text-decoration: none;
   
   .image-container {
+    pointer-events: none;
     width: 100%;
     height: 400px;
     overflow: hidden;
@@ -354,7 +355,48 @@ body {
       height: 110%;
     }
 
+    input[type=file] {
+      pointer-events: all;
+      height: 105%;
+      min-width: 100%;
+      position: relative;
+      opacity: 0;
+    }
+
+    .input-style {
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      min-width: 100%;
+      background: lightgrey;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 10px;
+        background: white;
+      }
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(90deg);
+        width: 50px;
+        height: 10px;
+        background: white;
+      }
+    }
+
     .article-image { 
+      pointer-events: none;
       transition: height .2s ease-out;
       height: 105%;
       min-width: 100%;
@@ -374,9 +416,50 @@ body {
       font-weight: 500
     }
 
-    p {
+    p, div {
+      display: flex;
+      align-items: center;
       font-size: .9rem;
       opacity: .5;
+    }
+
+    div {
+      gap: 10px;
+    }
+
+    .title-input {
+      border: 0;
+      color: black;
+      font-weight: 500;
+      font-size: 1.15rem;
+      outline: 0
+    }
+
+    div .artiste-value {
+      border: 0;
+      outline: 0;
+      width: 40%;
+    }
+
+    div .date-value {
+      border: 0;
+      outline: 0;
+      width: 30%;
+    }
+
+  }
+
+  .new-article-button {
+    background: transparent;
+    border: 2px solid black;
+    padding: 5px 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    transition: all .3s;
+
+    &:hover {
+      background: black;
+      color: white;
     }
   }
 }

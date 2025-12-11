@@ -1,6 +1,6 @@
 import { type F_Article } from "@/types/article-types"
 
-export default function ArticleComponent({ article }: { article: F_Article} ) {
+export default function ArticleComponent({ article, dashboard = false }: { article: F_Article, dashboard: boolean} ) {
   return <a href={""} className="article-container">
     <div className="image-container">
       <img className="article-image" src={article.image} />

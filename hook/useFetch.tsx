@@ -28,8 +28,6 @@ export default function useFetch<T>(url?: string){
       const fetching_data = await fetch(`${website_url}${url}`);
       const body = await fetching_data.json();
 
-      addError(body)
-
       setFetchResult(body)
       setLoading(false)
     }
@@ -89,8 +87,8 @@ export default function useFetch<T>(url?: string){
     for ( const key in data ) {
       let value: any = data[key]
 
-      if ( typeof value === "object" && value instanceof File) {
-        form_data.append(key, JSON.stringify(value))
+      if (value instanceof File) {
+        form_data.append(key, value)
       } else if ( typeof value === "string" || typeof value === "number") {
         form_data.append(key, value)
       }
