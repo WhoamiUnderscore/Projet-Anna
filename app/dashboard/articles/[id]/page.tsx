@@ -39,6 +39,7 @@ export default function ArticlePage(){
     if ( !fetchResult || !fetchResult.data ) return 
 
     const content = fetchResult.data.content.split("|/|").filter(v => v !== "");
+    console.log(content)
 
     content.forEach(c => {
       const newBlock = {
@@ -57,7 +58,7 @@ export default function ArticlePage(){
         {
           editor.blocks.map((value, i) => (
             <div
-              key={i}
+              key={value.id}
               id={value.id}
               style={{display: value.visible ? "unset" : "none"}}
               onClick={(e) => editor.createUpdateValue(value, e.target)}
@@ -67,7 +68,7 @@ export default function ArticlePage(){
         }
 
         {
-          editor.updateValue && <textarea id={`update-${editor.updateValue.id}`} className={`text-editor`} value={editor.updateValue.value} onChange={(e) => editor.handleUpdateChange(e)} ref={editor.update_textarea_ref}></textarea>
+          editor.updateValue && <textarea id={`update-${editor.updateValue.id}`} className={`text-editor`} value={editor.updateValue.value} onChange={(e) => editor.handleUpdateChange(e)} ref={editor.update_textarea_ref} onBlur={(e) => editor.reCreateBlockFromUpdate(editor.update_textarea_ref.current.value)} onKeyDown={(e) => editor.handleKeyDown(e)}></textarea>
         }
       </section>
       <textarea className={`text-editor`} placeholder={"Entre ton texte ici"} value={editor.editorValue} onChange={editor.handleChange}>

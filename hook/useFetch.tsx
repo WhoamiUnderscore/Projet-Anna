@@ -7,7 +7,7 @@ import { ErrorHandlerContext } from "@/hook/useErrorHandler"
 
 import { type B_NewChronologie } from "@/types/chronologie-types"
 
-const website_url = "http://localhost:3000/api"
+const website_url = "/api"
 
 export default function useFetch<T>(url?: string){
   const [loading, setLoading] = React.useState(true);

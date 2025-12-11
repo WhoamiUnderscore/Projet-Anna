@@ -77,8 +77,31 @@ export default function useEditor(props: Props) {
       return
     }
 
+    const blocksIndex = blocks.findIndex(b => b.id === updateValue.id);
+
     const value_without_break = value.slice(0, -1);
-    reCreateBlockFromUpdate(value_without_break)
+    reCreateBlockFromUpdate(value_without_break);
+
+    if ( value !== "" ) {
+      const newElement = {
+        id: crypto.randomUUID(),
+        markdown: "",
+        render: "",
+        visible: false
+      }
+
+      setBlocks((prev) => [
+        ...prev.slice(0, blocksIndex+1),
+        newElement,
+        ...prev.slice(blocksIndex+1)
+      ])
+
+      setUpdateValue({
+        id: newElement.id,
+        value: newElement.markdown,
+        updated: false
+      })
+    }
   }
 
   function reCreateBlockFromUpdate(value: string) {
@@ -139,23 +162,29 @@ export default function useEditor(props: Props) {
     const domIndex = Array.from(container_ref.current.children).findIndex((el) => el.id === updateValue.id);
 
     container_ref.current.insertBefore(update_textarea_ref.current, container_ref.current.children[domIndex])
+    update_textarea_ref.current.style.height = `${update_textarea_ref.current.scrollHeight}px`
+    update_textarea_ref.current.focus();
+
     setUpdateValue((prev) => ({
       ...prev,
       updated: true
     }))
-    update_textarea_ref.current.style.height = `${update_textarea_ref.current.scrollHeight}px`
-
-    update_textarea_ref.current.addEventListener("focusout", () => reCreateBlockFromUpdate(update_textarea_ref.current.value))
   }, [container_ref, updateValue, update_textarea_ref])
-
-  useEffect(() => {
-    if ( !props || !props.default_content ) return
-
-  }, [props])
 
   function updateBlocks(value: BlockType) {
     setBlocks((prev) => [...prev, value])
   }
 
-  return { blocks, editorValue, updateValue, container_ref, file_input_ref, update_textarea_ref, handleChange, handleUpdateChange, handleFile, createUpdateValue, allFiles, updateBlocks }
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if ( !updateValue ) return 
+
+    if (e.key === "Backspace" && updateValue.value === "") {
+      setBlocks((prev) => {
+        return prev.filter(b => b.id !== updateValue.id)
+      })
+      setUpdateValue(null)
+    }
+  }
+
+  return { blocks, editorValue, updateValue, container_ref, file_input_ref, update_textarea_ref, handleChange, handleUpdateChange, handleFile, createUpdateValue, allFiles, updateBlocks, reCreateBlockFromUpdate, handleKeyDown }
 }
