@@ -26,7 +26,8 @@ export default function useEditor(props: Props) {
   const [blocks, setBlocks] = useState<BlockType[]>([]);
   const [editorValue, setEditorValue] = useState<string>("");
   const [updateValue, setUpdateValue] = useState<UpdateType | null>(null);
-  const [allFiles, setAllFiles] = useState<File[]>([])
+  const [shouldInsertUpdate, setShouldInsertUpdate] = useState(false)
+  const [allFiles, setAllFiles] = useState<{id: string, file: File}[]>([])
 
   const container_ref = useRef<HTMLSectionElement>(null);
   const file_input_ref = useRef<HTMLTextAreaElement>(null);
@@ -81,9 +82,15 @@ export default function useEditor(props: Props) {
     const blocksIndex = blocks.findIndex(b => b.id === updateValue.id);
 
     const value_without_break = value.slice(0, -1);
-    reCreateBlockFromUpdate(value_without_break);
+
+    reCreateBlockFromUpdate(value_without_break)
 
     if ( value !== "" ) {
+      insertUpdateValue(blocksIndex)
+    }
+  }
+
+  function insertUpdateValue(blocksIndex: number){
       const newElement = {
         id: uuidv4(),
         markdown: "",
@@ -102,7 +109,6 @@ export default function useEditor(props: Props) {
         value: newElement.markdown,
         updated: false
       })
-    }
   }
 
   function reCreateBlockFromUpdate(value: string) {
@@ -121,17 +127,21 @@ export default function useEditor(props: Props) {
     if ( !file_input_ref ) return
 
     const file = file_input_ref.current.files[0];
+    const id = uuidv4();
 
-    setAllFiles((prev) => [...prev, file]);
+    setAllFiles((prev) => [...prev, {
+      id,
+      file,
+    }]);
 
     const imageURL = URL.createObjectURL(file);
     const markdown = `![text alternatif](${imageURL})`;
-    const render = `<img src="${imageURL}" />`
+    const render = `<img src="${imageURL}" class="image" data-id="${id}"/>`
 
     setBlocks((prev) => [
       ...prev,
       {
-        id: uuidv4(),
+        id,
         markdown,
         render,
         visible: true
@@ -159,6 +169,7 @@ export default function useEditor(props: Props) {
 
   useEffect(() => {
     if ( !container_ref || !updateValue || updateValue.updated || !update_textarea_ref ) return
+    console.log(updateValue)
 
     const domIndex = Array.from(container_ref.current.children)
       .findIndex((el) => el.getAttribute("data-id") === updateValue.id);
@@ -167,10 +178,21 @@ export default function useEditor(props: Props) {
     update_textarea_ref.current.style.height = `${update_textarea_ref.current.scrollHeight}px`
     update_textarea_ref.current.focus();
 
-    setUpdateValue((prev) => ({
-      ...prev,
-      updated: true
-    }))
+    const value = update_textarea_ref.current.value
+    update_textarea_ref.current.value = "";
+    update_textarea_ref.current.value = value;
+
+
+    setUpdateValue(() => {
+      const prev = updateValue;
+
+      if ( !prev ) return null
+      return {
+        id: prev.id,
+        value: prev.value,
+        updated: true
+      }
+    })
   }, [container_ref, updateValue, update_textarea_ref])
 
   function updateBlocks(value: BlockType) {
@@ -178,7 +200,9 @@ export default function useEditor(props: Props) {
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+      console.log(updateValue)
     if ( !updateValue ) return 
+
 
     if (e.key === "Backspace" && updateValue.value === "") {
       setBlocks((prev) => {
@@ -187,6 +211,20 @@ export default function useEditor(props: Props) {
       setUpdateValue(null)
     }
   }
+
+  useEffect(() => {
+    console.log(allFiles)
+    const images = document.querySelectorAll(".image")
+
+    images.forEach((img) => {
+      img.addEventListener("click", (e) => {
+        const id = e.currentTarget.getAttribute("data-id");
+        
+        setAllFiles((prev) => prev.filter(f => f.id !== id));
+        setBlocks((prev) => prev.filter(b => b.id !== id));
+      })
+    })
+  },[allFiles])
 
   return { blocks, editorValue, updateValue, container_ref, file_input_ref, update_textarea_ref, handleChange, handleUpdateChange, handleFile, createUpdateValue, allFiles, updateBlocks, reCreateBlockFromUpdate, handleKeyDown }
 }

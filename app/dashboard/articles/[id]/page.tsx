@@ -30,7 +30,7 @@ export default function ArticlePage(){
 
     for(let i = 0; i < validContent.image_number; i++ ){
       let key_name = `image-${i}`;
-      validContent[key_name] = editor.allFiles[i]
+      validContent[key_name] = editor.allFiles[i].file
     }
 
     updateData(validContent, `/article/content?id=${id}`)
