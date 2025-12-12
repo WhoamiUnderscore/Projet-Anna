@@ -8,9 +8,11 @@ import { useParams } from "next/navigation"
 import useEditor from "@/hook/useEditor"
 import useFetch from "@/hook/useFetch"
 
+import { type F_Article } from "@/types/article-types"
+
 export default function ArticlePage(){
   const { id } = useParams<{ id: string }>() 
-  const { loading, fetchResult, updateData } = useFetch<F_ChronologieElement>(`/article?id=${id}`);
+  const { loading, fetchResult, updateData } = useFetch<F_Article>(`/article?id=${id}`);
 
   const editor = useEditor();
 
@@ -38,15 +40,28 @@ export default function ArticlePage(){
 
   React.useEffect(() => {
     if ( !fetchResult || !fetchResult.data ) return 
+    const savedContent = sessionStorage.getItem("content");
+    let content: BlockType[] = [];
 
-    const content = fetchResult.data.content.split("|/|").filter(v => v !== "");
-    console.log(content)
+    if (savedContent) {
+      content = JSON.parse(savedContent);
+      console.log("loaded from sessionStorage:", content)
+    }
 
+    if ( content.length < 1 ){
+      content = fetchResult.data.content.split("|/|").filter(v => v !== "");
+    }
     content.forEach(c => {
+      let value = c
+
+      if ( c.id ) {
+        value = c.markdown
+      } 
+
       const newBlock = {
         id: uuidv4(),
-        markdown: c,
-        render: marked.parse(c),
+        markdown: value,
+        render: marked.parse(value),
         visible: true
       }
 
@@ -55,7 +70,10 @@ export default function ArticlePage(){
   }, [fetchResult])
     
   return <main className={"article-page"}>
-      <section className={`renderer-section`} ref={editor.container_ref}>
+    {
+      fetchResult && fetchResult.data && <a href={`/dashboard/mouvements/${fetchResult.data.mouvement.toLowerCase()}`}>Retour</a>
+    }
+      <section className={`renderer-section`} ref={editor.container_ref} onClick={(e) => editor.handleContainerClick(e)}>
         {
           editor.blocks.map((value, i) => (
             <div
@@ -74,8 +92,7 @@ export default function ArticlePage(){
       </section>
       <textarea className={`text-editor`} placeholder={"Entre ton texte ici"} value={editor.editorValue} onChange={editor.handleChange}>
       </textarea>
-      <input type="file" ref={editor.file_input_ref}/>
-      <button onClick={() => editor.handleFile()}>Add Image</button>
+      <input type="file" ref={editor.file_input_ref} onChange={() => editor.handleFile()}/>
 
       <button onClick={prepareUpdate}>Enregistrer</button>
   </main>

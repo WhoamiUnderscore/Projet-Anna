@@ -127,7 +127,7 @@ export default function useEditor(props: Props) {
     if ( !file_input_ref ) return
 
     const file = file_input_ref.current.files[0];
-    const id = uuidv4();
+    let id = uuidv4();
 
     setAllFiles((prev) => [...prev, {
       id,
@@ -136,7 +136,7 @@ export default function useEditor(props: Props) {
 
     const imageURL = URL.createObjectURL(file);
     const markdown = `![text alternatif](${imageURL})`;
-    const render = `<img src="${imageURL}" class="image" data-id="${id}"/>`
+    const render = `<img src="${imageURL}" class="image-block" data-id="${id}"/>`
 
     setBlocks((prev) => [
       ...prev,
@@ -196,6 +196,18 @@ export default function useEditor(props: Props) {
   }, [container_ref, updateValue, update_textarea_ref])
 
   function updateBlocks(value: BlockType) {
+    const dom = document.createElement("div")
+    dom.innerHTML = value.render;
+
+    const paragraph = dom.firstChild
+
+    if ( paragraph.firstChild instanceof HTMLImageElement ) {
+      paragraph.firstChild.classList.add("image-block");
+      paragraph.firstChild.setAttribute("data-id", value.id);
+    }
+
+    value.render = paragraph.outerHTML;
+
     setBlocks((prev) => [...prev, value])
   }
 
@@ -212,19 +224,25 @@ export default function useEditor(props: Props) {
     }
   }
 
+  function handleContainerClick(e) {
+    const img = e.target.closest('.image-block');
+    console.log(img)
+    if (!img) return;
+
+    const id = img.dataset.id;
+
+    setBlocks(prev => prev.filter(b => b.id !== id));
+    setAllFiles(prev => prev.filter(f => f.id !== id));
+  }
+
   useEffect(() => {
-    console.log(allFiles)
-    const images = document.querySelectorAll(".image")
+    if ( blocks.length > 0 ) {
+      window.sessionStorage.setItem("content", JSON.stringify(blocks))
+    }
+  },[blocks])
 
-    images.forEach((img) => {
-      img.addEventListener("click", (e) => {
-        const id = e.currentTarget.getAttribute("data-id");
-        
-        setAllFiles((prev) => prev.filter(f => f.id !== id));
-        setBlocks((prev) => prev.filter(b => b.id !== id));
-      })
-    })
-  },[allFiles])
+  useEffect(() => {
+  }, [])
 
-  return { blocks, editorValue, updateValue, container_ref, file_input_ref, update_textarea_ref, handleChange, handleUpdateChange, handleFile, createUpdateValue, allFiles, updateBlocks, reCreateBlockFromUpdate, handleKeyDown }
+  return { blocks, handleContainerClick, setBlocks, editorValue, updateValue, container_ref, file_input_ref, update_textarea_ref, handleChange, handleUpdateChange, handleFile, createUpdateValue, allFiles, updateBlocks, reCreateBlockFromUpdate, handleKeyDown }
 }

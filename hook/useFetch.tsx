@@ -47,8 +47,11 @@ export default function useFetch<T>(url?: string){
       });
       const body = await request.json();
       addError(body)
-
       setFetchResult(body)
+
+      if ( body.status === 200 ) {
+        window.sessionStorage.clear()
+      }
 
     } catch (error) {
       console.error(`ERROR POST: ${error}`)
@@ -70,8 +73,11 @@ export default function useFetch<T>(url?: string){
       });
       const body = await request.json();
       addError(body)
-
       setFetchResult(body)
+
+      if ( body.status === 200 ) {
+        window.sessionStorage.clear()
+      }
 
     } catch (error) {
       console.error(`ERROR POST: ${error}`)
