@@ -69,29 +69,33 @@ export default function MouvementPage() {
 
   return <main className="articles-page">
     <a href="/" className="return">Retour</a>
-    <section className="search-section">
-      <input className="search-article" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={"Nom de l'oeuvre..."}/>
+    {
+      currentArticles !== null && (
+        <section className="search-section">
+          <input className="search-article" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={"Nom de l'oeuvre..."}/>
 
-      <select className="select-author" defaultValue="null" onChange={(e) => {
-        const index = Number(e.target.value);
+          <select className="select-author" defaultValue="null" onChange={(e) => {
+            const index = Number(e.target.value);
 
-        setArtistFilter((prev) => (
-          prev.map((artist, i) => ({
-            name: artist.name,
-            active: i === index
-          }))
-        ))
-      }}>
-        <option value="null">Choisissez un(e) artiste</option>
-        {
-          artistFilter ? 
-            artistFilter.map((a, i) => <option key={i} value={i}>{a.name}</option>)
-            :
-            null
-        }
-      </select>
-    </section>
-    
+            setArtistFilter((prev) => (
+              prev.map((artist, i) => ({
+                name: artist.name,
+                active: i === index
+              }))
+            ))
+          }}>
+            <option value="null">Choisissez un(e) artiste</option>
+            {
+              artistFilter ? 
+                artistFilter.map((a, i) => <option key={i} value={i}>{a.name}</option>)
+                :
+                null
+            }
+          </select>
+        </section>
+      )
+    }
+
     <ul className="articles-page-container">
       {
         currentArticles === null ?

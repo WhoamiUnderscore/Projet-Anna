@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react"
 import { marked } from "marked"
+import { v4 as uuidv4 } from 'uuid'
 
 type BlockType = {
   id: string,
@@ -52,7 +53,7 @@ export default function useEditor(props: Props) {
     setBlocks((prev) => [
       ...prev,
       {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         markdown: value_without_break, 
         render: marked.parse(value_without_break),
         visible: true
@@ -84,7 +85,7 @@ export default function useEditor(props: Props) {
 
     if ( value !== "" ) {
       const newElement = {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         markdown: "",
         render: "",
         visible: false
@@ -130,7 +131,7 @@ export default function useEditor(props: Props) {
     setBlocks((prev) => [
       ...prev,
       {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         markdown,
         render,
         visible: true
@@ -159,7 +160,8 @@ export default function useEditor(props: Props) {
   useEffect(() => {
     if ( !container_ref || !updateValue || updateValue.updated || !update_textarea_ref ) return
 
-    const domIndex = Array.from(container_ref.current.children).findIndex((el) => el.id === updateValue.id);
+    const domIndex = Array.from(container_ref.current.children)
+      .findIndex((el) => el.getAttribute("data-id") === updateValue.id);
 
     container_ref.current.insertBefore(update_textarea_ref.current, container_ref.current.children[domIndex])
     update_textarea_ref.current.style.height = `${update_textarea_ref.current.scrollHeight}px`

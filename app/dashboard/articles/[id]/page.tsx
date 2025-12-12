@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { v4 as uuidv4 } from 'uuid'
 import { marked } from "marked"
 import { useParams } from "next/navigation" 
 
@@ -43,7 +44,7 @@ export default function ArticlePage(){
 
     content.forEach(c => {
       const newBlock = {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         markdown: c,
         render: marked.parse(c),
         visible: true
@@ -59,7 +60,7 @@ export default function ArticlePage(){
           editor.blocks.map((value, i) => (
             <div
               key={value.id}
-              id={value.id}
+              data-id={value.id}
               style={{display: value.visible ? "unset" : "none"}}
               onClick={(e) => editor.createUpdateValue(value, e.target)}
               dangerouslySetInnerHTML={{ __html: value.render }}

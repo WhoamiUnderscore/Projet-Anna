@@ -1,0 +1,13 @@
+@media screen and (max-width: 767px) {
+  html {
+    font-size: 16px;
+  } 
+  
+  .search-section {
+    margin-left: unset;
+    flex-direction: unset;
+    flex-wrap: wrap;
+  }
+
+  select { ouline: 0px }
+}

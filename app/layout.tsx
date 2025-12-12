@@ -4,6 +4,7 @@ import { ErrorHandlerProvider } from "@/hook/useErrorHandler"
 
 import "@/styles/animations.css"
 import "@/styles/style.css"
+import "@/styles/responcive.css"
 
 export const metadata: Metadata = {
   title: "Anna Site",
