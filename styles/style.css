@@ -329,6 +329,7 @@ body {
   padding: 50px;
   display: flex;
   flex-direction: column;
+  gap: 30px;
 }
 
 .search-section {
@@ -370,7 +371,7 @@ body {
     position: relative;
 
     &:hover .article-image {
-      height: 110%;
+      width: 110%;
     }
 
     input[type=file] {
@@ -415,9 +416,11 @@ body {
 
     .article-image { 
       pointer-events: none;
-      transition: height .2s ease-out;
-      height: 105%;
-      min-width: 100%;
+      transition: width .2s ease-out;
+      object-fit: cover;
+      min-height: 100%;
+      height: auto;
+      width: 100%;
       position: absolute;
       top: 50%;
       left: 50%;
