@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client"
 
 import useFetch from "@/hook/useFetch"

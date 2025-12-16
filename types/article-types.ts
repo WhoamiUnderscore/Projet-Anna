@@ -19,11 +19,21 @@ export type F_NewArticle = {
 }
 
 // Backend
+export type B_Article = {
+  _id: string,
+  title: string,
+  artiste: string,
+  date: number,
+  image: File | string,
+  mouvement: string,
+  content: string
+}
+
 export type B_NewArticle = {
   title: string,
   artiste: string,
   date: number,
-  image: string,
+  image: File | string,
   mouvement: string,
   content: string
 }

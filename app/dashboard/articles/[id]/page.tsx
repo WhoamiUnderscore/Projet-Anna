@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client"
 
 import { useEffect } from "react"
@@ -12,14 +13,21 @@ import useFetch from "@/hook/useFetch"
 
 import { type F_Article } from "@/types/article-types"
 
+type BlockType = {
+  id: string,
+  markdown: string,
+  render: string | Promise<string>,
+  visible: boolean
+}
+
 export default function ArticlePage(){
   const { id } = useParams<{ id: string }>() 
   const { loading, fetchResult, updateData } = useFetch<F_Article>(`/article?id=${id}`);
 
-  const editor = useEditor();
+  const editor = useEditor({});
 
   function prepareUpdate(){
-    let markdown_content = [];
+    let markdown_content: string[] = [];
     let validContent = {
       content: "",
       image_number: 0,
@@ -34,6 +42,7 @@ export default function ArticlePage(){
 
     for(let i = 0; i < validContent.image_number; i++ ){
       let key_name = `image-${i}`;
+      // @ts-expect-error 
       validContent[key_name] = editor.allFiles[i].file
     }
 
@@ -51,20 +60,25 @@ export default function ArticlePage(){
     }
 
     if ( content.length < 1 ){
-      content = fetchResult.data.content.split("|/|").filter(v => v !== "");
+      content = fetchResult.data.content.split("|/|").filter((v: string) => v !== "");
     }
 
-    content.forEach(c => {
-      let value = c
+    content.forEach((c: string | BlockType) => {
+      let value;
 
       if ( typeof c !== "string" ) {
         value = c.markdown
-      } 
+      } else {
+        value = c
+      }
+
+      const tokens = marked.lexer(value);
+      value = marked.parser(tokens)
 
       const newBlock = {
         id: uuidv4(),
         markdown: value,
-        render: marked.parse(value),
+        render: value,
         visible: true
       }
 

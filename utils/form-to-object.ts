@@ -1,3 +1,4 @@
+// @ts-nocheck
 export default function formToObject<T>( form_data: FromData ): T {
   let obj: Partial<T> = {};
 

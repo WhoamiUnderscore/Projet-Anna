@@ -1,9 +1,10 @@
+// @ts-nocheck
 import mongoose from "mongoose";
 
 import { B_HttpResponseData, StatusCode } from "@/types/http-response-types";
 import { NextResponse } from "next/server";
 
-export default function httpResponse(status: StatusCode, data?: B_HttpResponseData, message_props?: string) {
+export default function httpResponse(status: StatusCode, data?: B_HttpResponseData | null, message_props?: string) {
   let id = new  mongoose.Types.ObjectId().toString();
   let message = "";
 

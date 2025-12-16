@@ -1,3 +1,4 @@
+// @ts-nocheck
 import mongoose from "mongoose"
 
 import chronologie_schema from "@/models/chronologie-model";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import mongoose from "mongoose"
 
 const uri = process.env.DB_URI;

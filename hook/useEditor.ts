@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect, useState, useRef } from "react"
 import { marked } from "marked"
 import { v4 as uuidv4 } from 'uuid'

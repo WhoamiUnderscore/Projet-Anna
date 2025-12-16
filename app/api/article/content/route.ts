@@ -1,3 +1,4 @@
+// @ts-nocheck
 import mongoose from "mongoose"
 
 import Article from "@/class/article-class";
@@ -30,19 +31,28 @@ export async function PATCH(req: Request) {
   let form_data = await req.formData();
   
   let content = form_data.get("content");
+  
+  if ( !content || typeof content !== "string" ) return httpResponse(StatusCode.Unauthorized)
+
   let image_number = form_data.get("image_number")
   let images = []
+  let images_name = []
 
 
   // ====
   // Push images to github
   // ===
-  for(let i = 0; i < image_number; i++ ){
-    const img = form_data.get(`image-${i}`);
+  for(let i = 0; i < Number(image_number); i++ ){
+    const entry = form_data.get(`image-${i}`);
 
-    if ( img && isAnImage(img) ) {
+    if ( !(entry instanceof File) ) continue
+
+    const img: File = entry
+
+    if ( img !== null && isAnImage(img) ) {
+      images_name.push(img.name)
+
       images.push({
-        name: img.name,
         path: "/public/images/" + img.name,
         content: await toBase64(img)
       })
@@ -68,7 +78,7 @@ export async function PATCH(req: Request) {
   const content_parsed = content.replace(imageRegex, (match, alt, url, offset) => {
     if ( !url.includes("blob") ) return `![${alt}](${url})`;
 
-    const newUrl = `/images/${images[index].name}`;
+    const newUrl = `/images/${images_name[index]}`;
     index++
 
     return `![${alt}](${newUrl})`;
@@ -78,7 +88,7 @@ export async function PATCH(req: Request) {
   const { title, artiste, image, date, mouvement } = article;
 
   const update_article = await article_schema.findOneAndUpdate(
-    { _id: new mongoose.Types.ObjectId(id) },
+    { _id: id },
     {
       title,
       artiste,

@@ -1,4 +1,5 @@
 import { type F_Article } from "@/types/article-types"
+import { type F_ChronologieElement } from "@/types/chronologie-types"
 
 export enum StatusCode {
   // 2--
@@ -17,5 +18,4 @@ export enum StatusCode {
   InternalError = 500
 }
 
-export type B_HttpResponseData = F_Article[]
-
+export type B_HttpResponseData = F_Article | F_Article[] | F_ChronologieElement | F_ChronologieElement[]

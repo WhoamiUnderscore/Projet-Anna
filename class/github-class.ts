@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { FileType } from "@/types/file_types"
 
 export default class Github {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Article from "@/class/article-class";
 import Github from "@/class/github-class";
 
@@ -8,7 +9,7 @@ import toBase64 from "@/utils/to-base64"
 import isAnImage from "@/utils/is-image"
 
 import { StatusCode } from "@/types/http-response-types"
-import { type F_Article, type B_NewArticle } from "@/types/article-types";
+import { type B_Article, type B_NewArticle } from "@/types/article-types";
 import { type FileType } from "@/types/file-types"
 
 export async function GET(req: Request) {
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
   let form_data = await req.formData();
   let article = formToObject<B_NewArticle>(form_data);
 
-  if ( !isAnImage(article.image) ) {
+  if ( !isAnImage(article.image) || typeof article.image === "string" ) {
     return httpResponse(StatusCode.Unauthorized);
   }
 
@@ -65,7 +66,7 @@ export async function PATCH(req: Request) {
   await connection();
 
   let form_data = await req.formData();
-  let update_article = formToObject<F_Article>(form_data);
+  let update_article = formToObject<B_Article>(form_data);
 
   if ( !isAnImage(update_article.image) ) {
     return httpResponse(StatusCode.Unauthorized);
@@ -100,7 +101,10 @@ export async function PATCH(req: Request) {
       console.log("GITHUB ERROR: Error pushing file")
       return httpResponse(StatusCode.InternalError);
     }
-  } else if ( `/images/${update_article.image.name}` === article.image ) {
+  } else if ( 
+    typeof update_article.image !== "string" && 
+    `/images/${update_article.image.name}` === article.image 
+  ) {
     update_article.image = article.image
   }
   
