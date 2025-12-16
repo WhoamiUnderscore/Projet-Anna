@@ -19,10 +19,6 @@ export default function RootLayout({
 
   return (
     <html lang="fr">
-      {/* <body className={`${geistSans.variable} ${geistMono.variable}`}> */}
-      {/*   {children} */}
-      {/* </body> */}
-
       <body>
         <ErrorHandlerProvider>
         {children}

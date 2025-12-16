@@ -18,17 +18,15 @@ export async function GET(req: Request) {
   const id = searchParams.get("id") || undefined;
   const mouvement = searchParams.get("mouvement") || undefined;
 
-  let article;
-
   if ( id ) {
-    article = await Article.get(id);
+    let article = await Article.get(id);
+    return httpResponse(StatusCode.Success, article);
   } else if ( mouvement ) {
-    article = await Article.get_from_mouvement(mouvement);
-  } else {
-    return httpResponse(StatusCode.Unauthorized);
-  }
+    let article = await Article.get_from_mouvement(mouvement);
+    return httpResponse(StatusCode.Success, article);
+  } 
 
-  return httpResponse(StatusCode.Success, article);
+  return httpResponse(StatusCode.Unauthorized);
 }
 
 export async function POST(req: Request) {
@@ -60,6 +58,8 @@ export async function POST(req: Request) {
 
   return httpResponse(StatusCode.InternalError);
 }
+
+
 
 export async function PATCH(req: Request) {
   await connection();
@@ -132,6 +132,4 @@ export async function DELETE(req: Request) {
   const delete_article = await Article.delete(id);
 
   return httpResponse(delete_article);
-
-
 }

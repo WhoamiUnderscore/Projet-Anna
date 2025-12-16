@@ -5,14 +5,11 @@ import Github from "@/class/github-class";
 
 import connection from "@/utils/connection";
 import httpResponse from "@/utils/http-response";
-import formToObject from "@/utils/form-to-object";
 import toBase64 from "@/utils/to-base64"
 import isAnImage from "@/utils/is-image"
 import article_schema from "@/models/article-model"
 
 import { StatusCode } from "@/types/http-response-types"
-import { type F_Article, type B_NewArticle } from "@/types/article-types";
-import { type FileType } from "@/types/file-types"
 
 export async function PATCH(req: Request) {
   await connection();
@@ -36,14 +33,29 @@ export async function PATCH(req: Request) {
   let image_number = form_data.get("image_number")
   let images = []
 
+
+  // ====
+  // Push images to github
+  // ===
   for(let i = 0; i < image_number; i++ ){
     const img = form_data.get(`image-${i}`);
+
     if ( img && isAnImage(img) ) {
       images.push({
         name: img.name,
         path: "/public/images/" + img.name,
         content: await toBase64(img)
       })
+    }
+  }
+
+  if ( images.length > 0 ) {
+    const github_manager = new Github();
+    const pushed_pass = await github_manager.push_gihtub_files([...images]);
+
+    if ( !pushed_pass ) {
+      console.error("ERROR GITHUB: Error pushing file")
+      return httpResponse(StatusCode.InternalError)
     }
   }
 
@@ -55,21 +67,13 @@ export async function PATCH(req: Request) {
   const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
   const content_parsed = content.replace(imageRegex, (match, alt, url, offset) => {
     if ( !url.includes("blob") ) return `![${alt}](${url})`;
+
     const newUrl = `/images/${images[index].name}`;
     index++
 
     return `![${alt}](${newUrl})`;
   })
 
-  if ( images.length > 0 ) {
-    const github_manager = new Github();
-    const pushed_pass = await github_manager.push_gihtub_files([...images]);
-
-    if ( !pushed_pass ) {
-      console.error("ERROR GITHUB: Error pushing file")
-      return httpResponse(StatusCode.InternalError)
-    }
-  }
 
   const { title, artiste, image, date, mouvement } = article;
 

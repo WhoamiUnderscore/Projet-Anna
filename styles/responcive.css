@@ -10,4 +10,32 @@
   }
 
   select { ouline: 0px }
+
+  .articles-page-container {
+    grid: auto / 1fr;
+  }
+
+  .article-page {
+    padding: 50px;
+  }
+
+  .article-container {
+    margin: 0 auto;
+  }
+}
+
+
+/* tablet */
+@media screen and (min-width: 768px) and (max-width: 1100px) {
+  .articles-page-container {
+    grid: auto / 1fr 1fr;
+  }
+
+  .article-page {
+    padding: 50px 100px;
+  }
+
+  .article-container {
+    margin: 0 auto;
+  }
 }

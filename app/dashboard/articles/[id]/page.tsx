@@ -1,9 +1,11 @@
 "use client"
 
-import * as React from "react"
+import { useEffect } from "react"
 import { v4 as uuidv4 } from 'uuid'
 import { marked } from "marked"
 import { useParams } from "next/navigation" 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck } from "@fortawesome/free-solid-svg-icons"
 
 import useEditor from "@/hook/useEditor"
 import useFetch from "@/hook/useFetch"
@@ -38,23 +40,24 @@ export default function ArticlePage(){
     updateData(validContent, `/article/content?id=${id}`)
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if ( !fetchResult || !fetchResult.data ) return 
+
     const savedContent = sessionStorage.getItem("content");
     let content: BlockType[] = [];
 
     if (savedContent) {
       content = JSON.parse(savedContent);
-      console.log("loaded from sessionStorage:", content)
     }
 
     if ( content.length < 1 ){
       content = fetchResult.data.content.split("|/|").filter(v => v !== "");
     }
+
     content.forEach(c => {
       let value = c
 
-      if ( c.id ) {
+      if ( typeof c !== "string" ) {
         value = c.markdown
       } 
 
@@ -73,6 +76,17 @@ export default function ArticlePage(){
     {
       fetchResult && fetchResult.data && <a href={`/dashboard/mouvements/${fetchResult.data.mouvement.toLowerCase()}`}>Retour</a>
     }
+
+    <section className="input-file-container">
+      <button className="ui-input-file">Ajouter une image</button>
+      <input 
+        type="file" 
+        ref={editor.file_input_ref} 
+        onChange={() => editor.handleFile()} 
+        className="editor-add-input"
+      />
+    </section>
+
       <section className={`renderer-section`} ref={editor.container_ref} onClick={(e) => editor.handleContainerClick(e)}>
         {
           editor.blocks.map((value, i) => (
@@ -87,13 +101,30 @@ export default function ArticlePage(){
         }
 
         {
-          editor.updateValue && <textarea id={`update-${editor.updateValue.id}`} className={`text-editor`} value={editor.updateValue.value} onChange={(e) => editor.handleUpdateChange(e)} ref={editor.update_textarea_ref} onBlur={(e) => editor.reCreateBlockFromUpdate(editor.update_textarea_ref.current.value)} onKeyDown={(e) => editor.handleKeyDown(e)}></textarea>
+          editor.updateValue && (
+            <textarea 
+              id={`update-${editor.updateValue.id}`} 
+              className={`text-editor`} 
+              ref={editor.update_textarea_ref} 
+              value={editor.updateValue.value} 
+              onChange={(e) => editor.handleUpdateChange(e)} 
+              onBlur={(e) => editor.reCreateBlockFromUpdate(editor.update_textarea_ref.current.value)} 
+              onKeyDown={(e) => editor.handleKeyDown(e)}
+            />
+          )
         }
       </section>
-      <textarea className={`text-editor`} placeholder={"Entre ton texte ici"} value={editor.editorValue} onChange={editor.handleChange}>
-      </textarea>
-      <input type="file" ref={editor.file_input_ref} onChange={() => editor.handleFile()}/>
 
-      <button onClick={prepareUpdate}>Enregistrer</button>
+
+      <textarea 
+        className="text-editor" 
+        placeholder="Entre ton texte ici" 
+        value={editor.editorValue} 
+        onChange={editor.handleChange} 
+      />
+
+      <button className="save-button" onClick={prepareUpdate}>
+        <FontAwesomeIcon icon={faCheck} />
+      </button>
   </main>
 }

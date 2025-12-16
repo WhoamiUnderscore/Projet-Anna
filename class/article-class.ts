@@ -6,6 +6,7 @@ import { type F_Article, type B_NewArticle } from "@types/article-types"
 import { StatusCode } from "@/types/http-response-types"
 
 export default class Article {
+  // Get articles from mouvement name
   static async get_from_mouvement(mouvement: string): Promise<F_Article[]> {
     const mouvement_name = mouvement.charAt(0).toUpperCase() + mouvement.slice(1);
     const articles = await article_schema.find({ mouvement: mouvement_name });
@@ -13,6 +14,7 @@ export default class Article {
     return articles
   }
 
+  // Get article from his _id
   static async get(_id: string): Promise<F_Article> {
     const article = await article_schema.findOne({
       _id: new mongoose.Types.ObjectId(_id)
@@ -21,6 +23,7 @@ export default class Article {
     return article
   }
 
+  // Add a new article
   static async new(a: B_NewArticle): Promise<StatusCode> {
     const { title, image, artiste, date, mouvement, content } = a;
 
@@ -46,16 +49,7 @@ export default class Article {
     return StatusCode.ConflicWithServer
   }
 
-  static async exist(title: string): Promise<boolean> {
-    const is_article_exist = await article_schema.findOne({ title });
-
-    if ( is_article_exist ) {
-      return true
-    }
-
-    return false
-  }
-
+  // Update the article
   static async update(a: F_Article): Promise<StatusCode> {
     const { _id, title, artiste, date, image, mouvement, content} = a;
 
@@ -70,7 +64,7 @@ export default class Article {
         content
       },
       {
-        includeResultMetadata: true
+        includeResultMetadata: true // see if the update is ok or not
       }
     );
 
@@ -79,11 +73,23 @@ export default class Article {
     return StatusCode.NotFound
   }
 
+  // Delete the article
   static async delete(_id: string): Promise<StatusCode> {
     const delete_article = await article_schema.deleteOne({ _id: new mongoose.Types.ObjectId(_id) });
 
     if ( delete_article.deletedCount === 1 ) return StatusCode.Success;
 
     return StatusCode.NotFound;
+  }
+
+  // See if the article already exist
+  static async exist(title: string): Promise<boolean> {
+    const is_article_exist = await article_schema.findOne({ title });
+
+    if ( is_article_exist ) {
+      return true
+    }
+
+    return false
   }
 }

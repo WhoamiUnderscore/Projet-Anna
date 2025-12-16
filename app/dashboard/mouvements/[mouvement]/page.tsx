@@ -1,20 +1,20 @@
 "use client"
 
-import * as React from "react"
+import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
 
 import useFetch from "@/hook/useFetch"
-import { ArticleDashboard, NewArticle } from "@/components/article-component"
+import { ArticleDashboard, ArticleForm } from "@/components/article-component"
 
 import { type F_Article, type B_NewArticle, type F_NewArticle } from "@/types/article-types"
 
 export default function UpdateArticles() {
+  const [currentArticles, setCurrentArticles] = useState<F_Article[]>(null)
   const params = useParams<{ mouvement: string }>()
+
   const { loading, fetchResult } = useFetch<F_Article>(`/article?mouvement=${params.mouvement}`)
 
-  const [currentArticles, setCurrentArticles] = React.useState<F_Article[]>(null)
-
-  React.useEffect(() => {
+  useEffect(() => {
     if ( loading ) return  
     
     if ( fetchResult.status == 200 && fetchResult.data.length > 0) {
@@ -26,14 +26,12 @@ export default function UpdateArticles() {
           artistes += "/" + el.artiste
         }
       })
-
-      // artistes.slice(1).split("/").forEach(a => {
-      //   setArtistFilter((prev) => [...prev, {name: a, active: false}])
-      // })
-
     }
   }, [loading, fetchResult])
+
   return <main className="articles-page">
+    <a href="/dashboard" className="return">Retour</a>
+
     <ul className="articles-page-container">
       {
         currentArticles === null ?
@@ -44,7 +42,7 @@ export default function UpdateArticles() {
             :
             <p>Aucun element correspond a ta recherche</p>
       }
-      <NewArticle mouvement={params.mouvement}/>
+      <ArticleForm mouvement={params.mouvement}/>
     </ul>
   </main>
 }

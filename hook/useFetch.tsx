@@ -10,6 +10,9 @@ import { type B_NewChronologie } from "@/types/chronologie-types"
 const website_url = "/api"
 
 export default function useFetch<T>(url?: string){
+  // =====
+  // Init Values
+  // =====
   const [loading, setLoading] = React.useState(true);
 
   const [fetchResult, setFetchResult] = React.useState<DataFetch<T>>({
@@ -21,6 +24,10 @@ export default function useFetch<T>(url?: string){
   const router = useRouter();
   const { addError } = React.useContext(ErrorHandlerContext);
 
+
+  // ======
+  // Init Functions
+  // ======
   React.useEffect(() => {
     if ( !url ) return 
 
@@ -35,6 +42,10 @@ export default function useFetch<T>(url?: string){
     getDatas();
   }, [])
 
+
+  // ======
+  // Functions
+  // ======
   async function postDatas<T>(data: T, url: string ) {
     setLoading(true)
 
@@ -55,7 +66,6 @@ export default function useFetch<T>(url?: string){
 
     } catch (error) {
       console.error(`ERROR POST: ${error}`)
-
     } finally {
       setLoading(false)
     }
@@ -81,7 +91,24 @@ export default function useFetch<T>(url?: string){
 
     } catch (error) {
       console.error(`ERROR POST: ${error}`)
+    } finally {
+      setLoading(false)
+    }
+  }
 
+  async function deleteData(url: string) {
+    setLoading(true)
+
+    try {
+      const request = await fetch(`${website_url}${url}`, {
+        method: "DELETE",
+      });
+      const body = await request.json();
+      addError(body)
+      setFetchResult(body)
+
+    } catch (error) {
+      console.error(`ERROR POST: ${error}`)
     } finally {
       setLoading(false)
     }
@@ -101,26 +128,6 @@ export default function useFetch<T>(url?: string){
     }
 
     return form_data
-  }
-
-  async function deleteData(url: string) {
-    setLoading(true)
-
-    try {
-      const request = await fetch(`${website_url}${url}`, {
-        method: "DELETE",
-      });
-      const body = await request.json();
-      addError(body)
-
-      setFetchResult(body)
-
-    } catch (error) {
-      console.error(`ERROR POST: ${error}`)
-
-    } finally {
-      setLoading(false)
-    }
   }
 
   return { loading, fetchResult, postDatas, deleteData, updateData }

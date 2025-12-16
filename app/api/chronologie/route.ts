@@ -13,16 +13,17 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const name = searchParams.get("name") || undefined;
 
-
-  let chronologie_elements;
-
   if ( name ) {
-    chronologie_elements = await Chronologie.get(name);
+    let chronologie_elements = await Chronologie.get(name);
+
+    return httpResponse(StatusCode.Success, chronologie_elements);
   } else {
-    chronologie_elements = await Chronologie.get_all();
+    let chronologie_elements = await Chronologie.get_all();
+
+    return httpResponse(StatusCode.Success, chronologie_elements);
   }
 
-  return httpResponse(StatusCode.Success, chronologie_elements);
+  return httpResponse(StatusCode.Unauthorized);
 }
 
 export async function POST(req: Request) {

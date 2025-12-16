@@ -24,6 +24,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 body {
   position: relative;
+  min-height: 100svh;
 }
 
 .chronologie-page-container {
@@ -350,10 +351,9 @@ body {
 }
 
 .articles-page-container {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 30px;
+  display: grid;
+  grid: auto / 1fr 1fr 1fr;
+  gap: 50px;
 }
 
 .article-container {
@@ -630,7 +630,7 @@ body {
 
 /* Article Page */
 .article-page {
-  padding: 50px 50px;
+  padding: 50px 20vw;
   display: flex;
   flex-direction: column;
 
@@ -644,7 +644,6 @@ body {
   }
 
   .renderer-section {
-    margin-top: 20px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -655,6 +654,7 @@ body {
 
     p {
       margin: 5px 0;
+      overflow-wrap: break-word;
     }
 
     img {
@@ -664,14 +664,71 @@ body {
 }
 
 /* Textarea */
+
 textarea {
   height: auto;
   width: 100%;
   background: transparent;
   font-size: 1rem;
   color: black;
+  margin: 5px 0;
   font-family: "Outfit", sans-serif;
   border: 0;
   resize: none;
   outline: 0;
+}
+
+
+.input-file-container {
+  position: relative;
+  height: 30px;
+  width: 200px;
+  margin: 20px 0;
+
+  &:hover .ui-input-file {
+    background: black;
+    color: white
+  }
+
+  .editor-add-input {
+    opacity: 0;
+    pointer-events: all;
+    cursor: pointer;
+  }
+
+  .ui-input-file {
+    position: absolute;
+    pointer-events: none;
+    height: 30px;
+    width: 200px;
+    font-size: .9rem;
+    text-transform: uppercase;
+    background: transparent;
+    border: 2px solid black;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: background .3s,
+                color .3s;
+  }
+}
+
+
+.save-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: #386641;
+  background: #ADC0B1;
+  border: 2px solid #386641;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background .3s,
+              color .3s;
+
+  &:hover {
+    background: #386641;
+    color: white
+  }
+
 }
