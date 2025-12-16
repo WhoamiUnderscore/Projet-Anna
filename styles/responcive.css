@@ -2,6 +2,13 @@
   html {
     font-size: 16px;
   } 
+
+  .no-chronologie-container {
+    font-size: 1.3rem;
+    width: 90%;
+    text-align: center;
+    margin: 0 auto;
+  }
   
   .search-section {
     margin-left: unset;

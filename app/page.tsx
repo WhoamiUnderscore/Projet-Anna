@@ -12,12 +12,14 @@ export default function Home() {
   if ( loading ) return <p>loading...</p>
 
   return (
-    <main>
+    <main className="chronologie-page">
       {
         fetchResult.status === 200 && fetchResult.data.length > 0 ?
           <Chronologie elements={fetchResult.data} dashboard={false}/>
           : 
-          <p>erreur</p>
+          <section className="no-chronologie-container">
+            <p>Il n'y a pas encore de mouvement enregistré</p>
+          </section>
       }
     </main>
   );

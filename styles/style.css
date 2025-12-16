@@ -27,10 +27,16 @@ body {
   min-height: 100svh;
 }
 
-.chronologie-page-container {
+.chronologie-page {
   background-color: #dda15e;
   height: 100svh;
   width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chronologie-page-container {
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -38,6 +44,11 @@ body {
   pointer-events: none;
   animation: prevent-mouse .1s forwards;
   animation-delay: 2s;
+}
+
+.no-chronologie-container {
+  font-size: 1.4rem;
+  color: white;
 }
 
 .chronologie-container {

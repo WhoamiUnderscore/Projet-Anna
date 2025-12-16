@@ -12,7 +12,7 @@ export default function DashboardPage() {
   if ( loading ) return <p>loading...</p>
 
   return (
-    <main>
+    <main className="chronologie-page">
       <Chronologie elements={fetchResult.data} dashboard={true}/>
     </main>
   );
