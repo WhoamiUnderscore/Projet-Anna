@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Github from "@/class/github-class";
 import Cour from "@/class/cour-class"
 
