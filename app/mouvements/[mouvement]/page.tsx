@@ -85,12 +85,12 @@ export default function MouvementPage() {
             className="select-author" 
             defaultValue="null" 
             onChange={(e) => {
-              setArtistFilter((prev) => (
-                prev.map((artist, i) => ({
-                  name: artist.name,
+              setCourFilter((prev) => 
+                prev.map((cour, i) => ({
+                  name: cour.name,
                   active: i === Number(e.target.value)
                 }))
-              ))
+              )
             }}
           >
             <option value="null">Choisissez un(e) artiste</option>

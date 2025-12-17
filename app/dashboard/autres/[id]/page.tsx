@@ -11,7 +11,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons"
 import useEditor from "@/hook/useEditor"
 import useFetch from "@/hook/useFetch"
 
-import { type F_Article } from "@/types/article-types"
+import { type F_Cour } from "@/types/cour-types"
 
 type BlockType = {
   id: string,
@@ -20,9 +20,9 @@ type BlockType = {
   visible: boolean
 }
 
-export default function ArticlePage(){
+export default function CourPage(){
   const { id } = useParams<{ id: string }>() 
-  const { loading, fetchResult, updateData } = useFetch<F_Article>(`/article?id=${id}`);
+  const { loading, fetchResult, updateData } = useFetch<F_Article>(`/cours?id=${id}`);
 
   const editor = useEditor({});
 
@@ -46,7 +46,7 @@ export default function ArticlePage(){
       validContent[key_name] = editor.allFiles[i].file
     }
 
-    updateData(validContent, `/article/content?id=${id}`)
+    updateData(validContent, `/cours/content?id=${id}`)
   }
 
   useEffect(() => {
@@ -73,12 +73,11 @@ export default function ArticlePage(){
       }
 
       const tokens = marked.lexer(value);
-      value = marked.parser(tokens)
 
       const newBlock = {
         id: uuidv4(),
-        markdown: c,
-        render: value,
+        markdown: value,
+        render: marked.parser(tokens),
         visible: true
       }
 
@@ -86,10 +85,8 @@ export default function ArticlePage(){
     })
   }, [fetchResult])
     
-  return <main className={"article-page"}>
-    {
-      fetchResult && fetchResult.data && <a href={`/dashboard/mouvements/${fetchResult.data.mouvement.toLowerCase()}`}>Retour</a>
-    }
+  return <main className="cour-page">
+      <a href='/dashboard/autres'>Retour</a>
 
     <section className="input-file-container">
       <button className="ui-input-file">Ajouter une image</button>
@@ -101,7 +98,7 @@ export default function ArticlePage(){
       />
     </section>
 
-      <section className={`renderer-section`} ref={editor.container_ref} onClick={(e) => editor.handleContainerClick(e)}>
+      <section className='renderer-section' ref={editor.container_ref} onClick={(e) => editor.handleContainerClick(e)}>
         {
           editor.blocks.map((value, i) => (
             <div

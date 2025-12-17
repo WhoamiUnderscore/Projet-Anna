@@ -9,8 +9,13 @@ import { StatusCode } from "@/types/http-response-types"
 export default class Article {
   // Get articles from mouvement name
   static async get_from_mouvement(mouvement: string): Promise<F_Article[]> {
-    const mouvement_name = mouvement.charAt(0).toUpperCase() + mouvement.slice(1);
-    const articles = await article_schema.find({ mouvement: mouvement_name });
+    let mouvement_name: string[] = [];
+
+    mouvement.split(" ").forEach(word => {
+      mouvement_name.push(word.charAt(0).toUpperCase() + word.slice(1))
+    }) 
+
+    const articles = await article_schema.find({ mouvement: mouvement_name.join(" ") });
 
     return articles
   }

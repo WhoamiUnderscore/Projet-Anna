@@ -17,13 +17,15 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id") || undefined;
-  const mouvement = searchParams.get("mouvement") || undefined;
+  let mouvement = searchParams.get("mouvement") || undefined;
 
   if ( id ) {
     let article = await Article.get(id);
     return httpResponse(StatusCode.Success, article);
   } else if ( mouvement ) {
+    mouvement = mouvement.split("%20").join(" ")
     let article = await Article.get_from_mouvement(mouvement);
+
     return httpResponse(StatusCode.Success, article);
   } 
 

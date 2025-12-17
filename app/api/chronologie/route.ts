@@ -12,7 +12,7 @@ export async function GET(req: Request) {
   await connection();
 
   const { searchParams } = new URL(req.url);
-  const name = searchParams.get("name") || undefined;
+  let name = searchParams.get("name") || undefined;
 
   if ( name ) {
     let chronologie_elements = await Chronologie.get(name);

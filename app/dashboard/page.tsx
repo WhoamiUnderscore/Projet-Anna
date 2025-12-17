@@ -3,6 +3,7 @@
 
 import useFetch from "@/hook/useFetch"
 import Chronologie from "@/components/chronologie"
+import Navbar from "@/components/navbar"
 
 import { type F_ChronologieElement } from "@/types/chronologie-types"
 
@@ -13,6 +14,7 @@ export default function DashboardPage() {
 
   return (
     <main className="chronologie-page">
+      <Navbar dashboard />
       <Chronologie elements={fetchResult.data} dashboard={true}/>
     </main>
   );

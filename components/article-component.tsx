@@ -116,10 +116,16 @@ export function ArticleForm({
         image_preview: prev.image
       }))
     } else {
-      const mouvement_post = mouvement.charAt(0).toUpperCase() + mouvement.slice(1);
+      let final_mouvement_name: string[] = [];
+
+      mouvement.split("%20").forEach(word => { // Split at url space
+        const mouvement_post = word.charAt(0).toUpperCase() + word.slice(1);
+        final_mouvement_name.push(mouvement_post)
+      })
+
       setNewArticle((prev) => ({
         ...prev,
-        mouvement: mouvement_post
+        mouvement: final_mouvement_name.join(" ")
       }))
     }
   }, [])
@@ -133,7 +139,7 @@ export function ArticleForm({
   function handleSave() {
     const { title, artiste, content, date, image, mouvement } = newArticle;
 
-    const validData: B_NewArticle = {
+    let validData: B_NewArticle = {
       title,
       artiste,
       date,

@@ -38,7 +38,7 @@ export default function Chronologie({ elements, dashboard }: Props) {
     <div className="next" onClick={() => moveChronologie(false)}></div>
     <div className="previous" onClick={() => moveChronologie(true)}></div>
 
-    <ul className="chronologie-container" style={{ width: `calc(100vw * ${elements.length})`, transform: `translateX(calc((-50vw - 50px) * ${currentState} ))`}}>
+    <ul className="chronologie-container" style={{ width: `calc(100vw * ${elements.length == 0 ? 1 : elements.length})`, transform: `translateX(calc((-50vw - 50px) * ${currentState} ))`}}>
       {
         elements.map((el, i) => <ChronologieElement key={i} element={el} index={i} currentState={currentState} dashboard={dashboard}/>)
       }

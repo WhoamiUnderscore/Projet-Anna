@@ -36,52 +36,6 @@ body {
   justify-content: center;
 }
 
-.navbar {
-  position: absolute;
-  top: 50px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  .links-container {
-    display: flex;
-    gap: 20px;
-
-    li {
-      opacity: .4;
-      position: relative;
-      transition: opacity .3s,
-                  color .3s;
-
-      &:hover {
-        opacity: .8;
-        color: #fefae0;
-
-        &::after {width: 80%;}
-      }
-
-      &.active {
-        color: #fefae0;
-        opacity: 1;
-
-        &::after {
-          width: 100%;
-        }
-      }
-
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: white;
-        transition: width .3s;
-      }
-    }
-  }
-}
-
 .chronologie-page-container {
   overflow: hidden;
   display: flex;
@@ -407,13 +361,13 @@ body {
   border-radius: 10px;
 }
 
-.articles-page-container, .cours-page-container {
+.articles-page-container {
   display: grid;
   grid: auto / 1fr 1fr 1fr;
   gap: 50px;
 }
 
-.article-container, .cour-container {
+.article-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -471,7 +425,7 @@ body {
       }
     }
 
-    .article-image, .cour-image { 
+    .article-image { 
       pointer-events: none;
       transition: width .2s ease-out;
       object-fit: cover;
@@ -486,7 +440,7 @@ body {
     }
   }
 
-  .article-information-container, .cour-information-container {
+  .article-information-container {
     margin-top: 10px;
     overflow: hidden;
 
@@ -513,7 +467,7 @@ body {
       outline: 0
     }
 
-    div .artiste-value, div .subject-value {
+    div .artiste-value {
       border: 0;
       outline: 0;
       width: 40%;
@@ -686,22 +640,21 @@ body {
 /* } */
 
 /* Article Page */
-.article-page, .cour-page {
+.article-page {
   padding: 50px 20vw;
   display: flex;
   flex-direction: column;
 
-  .article-title, .cour-title {
+  .article-title {
     font-size: 3rem;
   }
 
-  .article-information, .cour-information {
+  .article-information {
     opacity: .6;
     font-size: 1.1rem
   }
 
   .renderer-section {
-    margin-top: 20px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -795,18 +748,17 @@ textarea {
 /* Cour Element */
 .cour-container {
   width: 100%;
+  height: 400px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0px;
 
   .image-container {
     position: relative;
-    width: 100%;
-    height: 400px;
     overflow: hidden;
 
     img {
-      position: absolute;
+      position: aboslute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -816,29 +768,4 @@ textarea {
       width: 100%;
     }
   }
-  
-  .cour-informations {
-    h3 {
-      font-weight: 500
-    }
-
-    p {
-      font-size: .9rem;
-      opacity: .5;
-    }
-  }
-
-}
-
-.cours-page {
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.cours-container {
-  display: grid;
-  grid: auto / 1fr 1fr 1fr;
-  gap: 30px;
 }

@@ -20,13 +20,6 @@ export default function UpdateArticles() {
     
     if ( fetchResult.status == 200 && fetchResult.data.length > 0) {
       setCurrentArticles(fetchResult.data);
-      let artistes = "";
-
-      fetchResult.data.forEach((el) => {
-         if ( !artistes.includes(el.artiste) ) {
-          artistes += "/" + el.artiste
-        }
-      })
     }
   }, [loading, fetchResult])
 

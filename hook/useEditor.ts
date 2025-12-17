@@ -31,6 +31,8 @@ export default function useEditor(props: Props) {
   const file_input_ref = useRef<HTMLTextAreaElement>(null);
   const update_textarea_ref = useRef<HTMLTextAreaElement>(null)
 
+  useEffect(() => console.log(blocks), [blocks])
+
 
   useEffect(() => {
     // ======
@@ -155,13 +157,16 @@ export default function useEditor(props: Props) {
 
   function reCreateBlockFromUpdate(value: string) {
     setBlocks(prev => {
-      return prev.map(b => b.id === updateValue.id ? {
+      return prev
+      .map(b => b.id === updateValue.id ? {
         ...b,
         visible: true,
         markdown: value,
         render: marked.parse(value)
       } : b )
+      .filter(b => b.markdown !== "")
     });
+
     setUpdateValue(null)
   }
 
@@ -233,7 +238,7 @@ export default function useEditor(props: Props) {
 
     const paragraph = dom.firstChild
 
-    if ( paragraph.firstChild instanceof HTMLImageElement ) {
+    if ( paragraph && paragraph.firstChild instanceof HTMLImageElement ) {
       paragraph.firstChild.classList.add("image-block");
       paragraph.firstChild.setAttribute("data-id", value.id);
     }
@@ -279,6 +284,7 @@ export default function useEditor(props: Props) {
 
     handleChange,
     handleUpdateChange,
+    handleContainerClick,
     handleFile,
     handleKeyDown,
     createUpdateValue,
