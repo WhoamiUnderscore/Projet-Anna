@@ -10,6 +10,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons"
 
 import useEditor from "@/hook/useEditor"
 import useFetch from "@/hook/useFetch"
+import Loading from "@/components/loading"
 
 import { type F_Cour } from "@/types/cour-types"
 
@@ -84,6 +85,10 @@ export default function CourPage(){
       editor.updateBlocks(newBlock)
     })
   }, [fetchResult])
+
+  if ( loading ) {
+    return <Loading />
+  }
     
   return <main className="cour-page">
       <a href='/dashboard/autres'>Retour</a>

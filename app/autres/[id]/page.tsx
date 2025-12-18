@@ -6,6 +6,7 @@ import { marked } from "marked"
 import { useParams } from "next/navigation" 
 
 import useFetch from "@/hook/useFetch"
+import Loading from "@/components/loading"
 
 import { type F_Cour } from "@/hook/cour-types"
 
@@ -35,6 +36,10 @@ export default function CourPage() {
 
   if ( !cour ) {
     return <p>Impossible de trouver l'article demander</p>
+  }
+
+  if ( loading ) {
+    return <Loading />
   }
 
   return <main className="cour-page">

@@ -6,13 +6,16 @@ import { useParams } from "next/navigation"
 
 import useFetch from "@/hook/useFetch"
 import { ArticleDashboard, ArticleForm } from "@/components/article-component"
+import Loading from "@/components/loading"
 
 import { type F_Article, type B_NewArticle, type F_NewArticle } from "@/types/article-types"
 
 export default function UpdateArticles() {
   const [currentArticles, setCurrentArticles] = useState<F_Article[]>(null)
-  const params = useParams<{ mouvement: string }>()
+  const [search, setSearch] = useState<String>("");
+  const [artistFilter, setArtistFilter] = useState([])
 
+  const params = useParams<{ mouvement: string }>()
   const { loading, fetchResult } = useFetch<F_Article>(`/article?mouvement=${params.mouvement}`)
 
   useEffect(() => {
@@ -20,11 +23,87 @@ export default function UpdateArticles() {
     
     if ( fetchResult.status == 200 && fetchResult.data.length > 0) {
       setCurrentArticles(fetchResult.data);
+      let artistes = "";
+
+      fetchResult.data.forEach((el) => {
+         if ( !artistes.includes(el.artiste) ) {
+          artistes += "/" + el.artiste
+        }
+      })
+
+      artistes.slice(1).split("/").forEach(a => {
+        setArtistFilter((prev) => [...prev, {name: a, active: false}])
+      })
     }
   }, [loading, fetchResult])
 
+
+  useEffect(() => {
+    if ( currentArticles === null ) return 
+
+    function filter_by_name(input: F_Article[], search_value: string): F_Article[] {
+      return input.filter(a => a.title.toLowerCase().includes(search_value.toLowerCase()));
+    }
+
+    function filter_by_artist(input: F_Article[], artist_name: string): F_Article[] {
+      return input.filter(a => a.artiste === artist_name )
+    }
+
+
+    let all_articles = fetchResult.data;
+    const current_artist_filter = artistFilter.find(a => a.active);
+
+    if ( current_artist_filter ) {
+      all_articles = filter_by_artist(all_articles, current_artist_filter.name) ;
+    }
+
+    if ( search.length > 3 ) {
+      all_articles = filter_by_name(all_articles, search)
+    }
+
+    setCurrentArticles(all_articles)
+  }, [search, artistFilter])
+
+  if ( loading ) {
+    return <Loading />
+  }
+
   return <main className="articles-page">
     <a href="/dashboard" className="return">Retour</a>
+
+    {
+      currentArticles !== null && (
+        <section className="search-section">
+          <input 
+            className="search-article" 
+            value={search} 
+            onChange={(e) => setSearch(e.target.value)} 
+            placeholder="Nom de l'oeuvre..."
+          />
+
+          <select 
+            className="select-author" 
+            defaultValue="null" 
+            onChange={(e) => {
+              setCourFilter((prev) => 
+                prev.map((cour, i) => ({
+                  name: cour.name,
+                  active: i === Number(e.target.value)
+                }))
+              )
+            }}
+          >
+            <option value="null">Choisissez un(e) artiste</option>
+            {
+              artistFilter ? 
+                artistFilter.map((a, i) => <option key={i} value={i}>{a.name}</option>)
+                :
+                null
+            }
+          </select>
+        </section>
+      )
+    }
 
     <ul className="articles-page-container">
       {
@@ -36,7 +115,11 @@ export default function UpdateArticles() {
             :
             <p>Aucun element correspond a ta recherche</p>
       }
-      <ArticleForm mouvement={params.mouvement}/>
+
+      {
+        search.length <= 3 &&
+        <ArticleForm mouvement={params.mouvement}/>
+      }
     </ul>
   </main>
 }

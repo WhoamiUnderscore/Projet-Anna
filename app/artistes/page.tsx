@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 
 import useFetch from "@/hook/useFetch"
 import { ArtisteComponent } from "@/components/artiste-component"
+import Loading from "@/components/loading"
 
 import { type F_Artiste } from "@/types/artiste-types"
 
@@ -40,9 +41,8 @@ export default function CoursPage() {
 
 
   if ( loading ) {
-    return <p>Loading...</p>
+    return <Loading />
   }
-
 
   return (
     <main className="artistes-page">

@@ -6,6 +6,7 @@ import { useParams } from "next/navigation"
 
 import useFetch from "@/hook/useFetch"
 import { ArticleComponent } from "@/components/article-component"
+import Loading from "@/components/loading"
 
 import { type F_Article } from "@/types/article-types"
 
@@ -65,7 +66,7 @@ export default function MouvementPage() {
 
 
   if ( loading ) {
-    return <p>Loading...</p>
+    return <Loading />
   }
 
   return <main className="articles-page">

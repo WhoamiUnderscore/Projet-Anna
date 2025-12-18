@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 
 import useFetch from "@/hook/useFetch"
 import { CourComponent } from "@/components/cour-component"
+import Loading from "@/components/loading"
 
 import { type F_Cour } from "@/types/cour-types"
 
@@ -62,7 +63,7 @@ export default function CoursPage() {
 
 
   if ( loading ) {
-    return <p>Loading...</p>
+    return <Loading />
   }
 
 

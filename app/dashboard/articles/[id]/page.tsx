@@ -10,6 +10,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons"
 
 import useEditor from "@/hook/useEditor"
 import useFetch from "@/hook/useFetch"
+import Loading from "@/components/loading"
 
 import { type F_Article } from "@/types/article-types"
 
@@ -85,6 +86,10 @@ export default function ArticlePage(){
       editor.updateBlocks(newBlock)
     })
   }, [fetchResult])
+
+  if ( loading ) {
+    return <Loading />
+  }
     
   return <main className={"article-page"}>
     {

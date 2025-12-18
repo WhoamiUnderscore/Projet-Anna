@@ -6,6 +6,7 @@ import { marked } from "marked"
 import { useParams } from "next/navigation" 
 
 import useFetch from "@/hook/useFetch"
+import Loading from "@/components/loading"
 
 import { type F_Artiste } from "@/hook/artiste-types"
 
@@ -35,6 +36,10 @@ export default function CourPage() {
 
   if ( !artiste ) {
     return <p>Impossible de trouver l'article demander</p>
+  }
+
+  if ( loading ) {
+    return <Loading />
   }
 
   return <main className="artiste-page">

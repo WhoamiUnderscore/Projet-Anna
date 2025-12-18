@@ -100,7 +100,7 @@ export function ArtisteForm({
 }: { default_value: F_NewArtiste }) {
   const [artisteForm, setArtisteForm] = useState<F_NewArtiste>(default_value)
 
-  const { loading, postDatas, updateData } = useFetch()
+  const { postDatas, updateData } = useFetch()
 
   useEffect(() => {
     if ( artisteForm._id ) {

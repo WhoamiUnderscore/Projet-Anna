@@ -6,6 +6,7 @@ import { marked } from "marked"
 import { useParams } from "next/navigation" 
 
 import useFetch from "@/hook/useFetch"
+import Loading from "@/components/loading"
 
 import { type F_Article } from "@/types/article-types"
 
@@ -35,6 +36,10 @@ export default function ArticlePage(){
 
   if ( !article ) {
     return <p>Impossible de trouver l'article demander</p>
+  }
+
+  if ( loading ) {
+    return <Loading />
   }
 
   return <main className="article-page">
