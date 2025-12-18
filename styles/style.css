@@ -382,7 +382,7 @@ body {
 }
 
 /* Article in Mouvement */
-.articles-page {
+.articles-page, .cours-page, .artistes-page {
   background: #fdfffc;
   padding: 50px;
   display: flex;
@@ -407,13 +407,13 @@ body {
   border-radius: 10px;
 }
 
-.articles-page-container, .cours-page-container {
+.articles-page-container, .cours-page-container, .artistes-page-container {
   display: grid;
   grid: auto / 1fr 1fr 1fr;
   gap: 50px;
 }
 
-.article-container, .cour-container {
+.article-container, .cour-container, .artiste-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -427,7 +427,7 @@ body {
     overflow: hidden;
     position: relative;
 
-    &:hover .article-image {
+    &:hover .article-image, &:hover .artiste-image {
       width: 110%;
     }
 
@@ -471,7 +471,7 @@ body {
       }
     }
 
-    .article-image, .cour-image { 
+    .article-image, .cour-image, .artiste-image { 
       pointer-events: none;
       transition: width .2s ease-out;
       object-fit: cover;
@@ -486,7 +486,7 @@ body {
     }
   }
 
-  .article-information-container, .cour-information-container {
+  .article-information-container, .cour-information-container, .artiste-information-container {
     margin-top: 10px;
     overflow: hidden;
 
@@ -686,16 +686,16 @@ body {
 /* } */
 
 /* Article Page */
-.article-page, .cour-page {
+.article-page, .cour-page, .artiste-page {
   padding: 50px 20vw;
   display: flex;
   flex-direction: column;
 
-  .article-title, .cour-title {
+  .article-title, .cour-title, .artiste-title {
     font-size: 3rem;
   }
 
-  .article-information, .cour-information {
+  .article-information, .cour-information, .artiste-information {
     opacity: .6;
     font-size: 1.1rem
   }
@@ -793,7 +793,7 @@ textarea {
 
 
 /* Cour Element */
-.cour-container {
+.cour-container, .artiste-container {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -817,7 +817,7 @@ textarea {
     }
   }
   
-  .cour-informations {
+  .cour-informations, .artiste-informations {
     h3 {
       font-weight: 500
     }
@@ -828,13 +828,6 @@ textarea {
     }
   }
 
-}
-
-.cours-page {
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
 }
 
 .cours-container {

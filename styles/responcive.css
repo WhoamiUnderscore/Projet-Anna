@@ -18,15 +18,15 @@
 
   select { ouline: 0px }
 
-  .articles-page-container, .cours-page-container {
+  .articles-page-container, .cours-page-container, .artistes-page-container {
     grid: auto / 1fr;
   }
 
-  .article-page, .cour-page {
+  .article-page, .cour-page, .artiste-page {
     padding: 50px;
   }
 
-  .article-container, .cour-container {
+  .article-container, .cour-container, .artiste-container {
     margin: 0 auto;
   }
 }
@@ -34,15 +34,15 @@
 
 /* tablet */
 @media screen and (min-width: 768px) and (max-width: 1100px) {
-  .articles-page-container, .cours-page-container {
+  .articles-page-container, .cours-page-container, .artistes-page-container {
     grid: auto / 1fr 1fr;
   }
 
-  .article-page, .cour-page {
+  .article-page, .cour-page, .artiste-page {
     padding: 50px 100px;
   }
 
-  .article-container, .cour-container {
+  .article-container, .cour-container, .artiste-container {
     margin: 0 auto;
   }
 }

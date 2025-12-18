@@ -31,7 +31,7 @@ export default function useEditor(props: Props) {
   const file_input_ref = useRef<HTMLTextAreaElement>(null);
   const update_textarea_ref = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => console.log(blocks), [blocks])
+  // useEffect(() => console.log(blocks), [blocks])
 
 
   useEffect(() => {
@@ -175,7 +175,7 @@ export default function useEditor(props: Props) {
 
     const file = file_input_ref.current.files[0];
     let index_update;
-    let id = uuidv4;
+    let id = uuidv4();
 
     if ( lastUpdateId ) {
       index_update = blocks.findIndex(b => b.id == lastUpdateId)
