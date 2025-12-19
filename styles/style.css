@@ -277,8 +277,8 @@ body {
   align-items: center;
   gap: 10px;
   opacity: 0;
-  animation: chronologie-name-appear 1s linear forwards;
-  animation-delay: 1.2s;
+  animation: chronologie-name-appear .5s linear forwards;
+  animation-delay: .3s;
 
   span {
     cursor: pointer;

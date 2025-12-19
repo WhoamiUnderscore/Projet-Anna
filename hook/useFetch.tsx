@@ -36,6 +36,10 @@ export default function useFetch<T>(url?: string){
       const fetching_data = await fetch(`${website_url}${url}`);
       const body = await fetching_data.json();
 
+      if ( body.status !== 200 ) {
+        addError(body)
+      }
+
       setFetchResult(body)
       setLoading(false)
     }
@@ -63,6 +67,9 @@ export default function useFetch<T>(url?: string){
 
       if ( body.status === 200 ) {
         window.sessionStorage.clear()
+        window.location.reload()
+      } else {
+        addError(body)
       }
 
     } catch (error) {
@@ -88,6 +95,9 @@ export default function useFetch<T>(url?: string){
 
       if ( body.status === 200 ) {
         window.sessionStorage.clear()
+        window.location.reload()
+      } else {
+        addError(body)
       }
 
     } catch (error) {
@@ -105,8 +115,13 @@ export default function useFetch<T>(url?: string){
         method: "DELETE",
       });
       const body = await request.json();
-      addError(body)
       setFetchResult(body)
+
+      if ( body.status === 200 ) {
+        window.location.reload()
+      } else {
+        addError(body)
+      }
 
     } catch (error) {
       console.error(`ERROR POST: ${error}`)
