@@ -30,7 +30,7 @@ export default class Article {
   }
 
   // Add a new article
-  static async new(a: B_NewArticle): Promise<StatusCode> {
+  static async new(a: B_NewArticle): Promise<{status: StatusCode, _id: string}> {
     const { title, image, artiste, date, mouvement, content } = a;
 
     const is_article_exist = await Article.exist(title);
@@ -49,10 +49,16 @@ export default class Article {
     });
 
     if ( new_article.__v !== null || new_article.__v !== undefined ) {
-      return StatusCode.Success
+      return {
+        status: StatusCode.Success,
+        _id: new_article._id.toString()
+      }
     }
 
-    return StatusCode.ConflicWithServer
+    return {
+      status: StatusCode.InternalError,
+      _id: ""
+    }
   }
 
   // Update the article

@@ -4,18 +4,14 @@ import { type B_Image, type B_NewImage } from "@/types/image-types"
 import { StatusCode } from "@/types/http-response-types"
 
 export default class Image {
-  static async get(id: string): Promise<B_Image> {
-    const image = await image_schema.findOne({ _id: id })
+  static async get(path: string): Promise<B_Image> {
+    const image = await image_schema.findOne({ path })
 
     return image
   }
 
   static async new(i: B_NewImage): Promise<StatusCode> {
     const { path, id_used } = i;
-
-    const image_already_exist = await Image.exist(path);
-
-    if ( image_already_exist ) return StatusCode.Conflic
 
     const new_image = await image_schema.create({
       path,
@@ -30,7 +26,7 @@ export default class Image {
   }
 
   static async update(i: B_Image): Promise<StatusCode> {
-    const { _id, path, id_used } = i;
+    const { _id, id_used, path } = i;
 
     const update_image = await image_schema.findOneAndUpdate(
       { _id },
@@ -48,15 +44,21 @@ export default class Image {
     return StatusCode.NotFound
   }
 
-  static async delete(_id: string): Promise<StatusCode> {
-    const delete_image = await image_schema.deleteOne({ _id });
+  static async delete_if_needed(path: string, id: string): Promise<boolean> {
+    const image = await Image.get({ path });
+    image.id_used = image.id_used.filter(i => i !== id);
 
-    if ( delete_image.deletedCount === 1 ) return StatusCode.Success;
+    const update_image = await Image.update(image);
 
-    return StatusCode.NotFound;
+    if ( image.id_used.length === 0 ) {
+      const delete_image = await image_schema.deleteOne({ _id: image.id })
+
+      if ( delete_image.deletedCount === 1 ) return true;
+    }
+    return false;
   }
 
-  static async exit(path: string): Promise<boolean> {
+  static async exist(path: string): Promise<boolean> {
     const image_already_exist = await image_schema.findOne({ path });
 
     if ( image_already_exist ) return true
