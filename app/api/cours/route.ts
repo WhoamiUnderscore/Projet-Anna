@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   }
 
   const image: FileType = {
-    path: "/public/imagees/" + cour.image.name,
+    path: "/public/images/" + cour.image.name,
     content: await toBase64(cour.image)
   };
   cour.image = "/images/" + cour.image.name;
