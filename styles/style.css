@@ -602,7 +602,7 @@ body {
 
 /* Error Handler */
 .fetch-return {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: -100%;
   opacity: 0;

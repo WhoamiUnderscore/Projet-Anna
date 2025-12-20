@@ -30,13 +30,17 @@ export default class Article {
   }
 
   // Add a new article
-  static async new(a: B_NewArticle): Promise<{status: StatusCode, _id: string}> {
+  static async new(a: B_NewArticle): Promise<{status: StatusCode, _id: string, message: string}> {
     const { title, image, artiste, date, mouvement, content } = a;
 
     const is_article_exist = await Article.exist(title);
 
     if ( is_article_exist ) {
-      return StatusCode.Conflic;
+      return { 
+        status: StatusCode.Conflic, 
+        _id: "", 
+        message: "Un article existe deja avec un nom similaire, veuillez en choisir un nouveau." 
+      };
     }
 
     const new_article = await article_schema.create({
@@ -51,18 +55,20 @@ export default class Article {
     if ( new_article.__v !== null || new_article.__v !== undefined ) {
       return {
         status: StatusCode.Success,
-        _id: new_article._id.toString()
+        _id: new_article._id.toString(),
+        message: ""
       }
     }
 
     return {
       status: StatusCode.InternalError,
-      _id: ""
+      _id: "",
+      message: "Une erreur est survenu lors de la creation de votre article, veuillez reessayer."
     }
   }
 
   // Update the article
-  static async update(a: F_Article): Promise<StatusCode> {
+  static async update(a: F_Article): Promise<{ status: StatusCode, message: string }> {
     const { _id, title, artiste, date, image, mouvement, content} = a;
 
     const update_article = await article_schema.findOneAndUpdate(
@@ -80,18 +86,18 @@ export default class Article {
       }
     );
 
-    if ( update_article.ok && update_article.value !== null ) return StatusCode.Success
+    if ( update_article.ok && update_article.value !== null ) return { status: StatusCode.Success, message: "" }
 
-    return StatusCode.NotFound
+    return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la modification de votre article, veuillez reessayer" }
   }
 
   // Delete the article
-  static async delete(_id: string): Promise<StatusCode> {
+  static async delete(_id: string): Promise<{ status: StatusCode, message: string }> {
     const delete_article = await article_schema.deleteOne({ _id: new mongoose.Types.ObjectId(_id) });
 
-    if ( delete_article.deletedCount === 1 ) return StatusCode.Success;
+    if ( delete_article.deletedCount === 1 ) return { status: StatusCode.Success, message: "" };
 
-    return StatusCode.NotFound;
+    return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la suppression de votre article, veuillez reessayer" };
   }
 
   // See if the article already exist

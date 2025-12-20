@@ -14,13 +14,17 @@ export default class Cour {
     return cours;
   }
 
-  static async new(c: B_Cour): Promise<StatusCode> {
+  static async new(c: B_Cour): Promise<{ status: StatusCode, _id: string, message: string }> {
     const { title, image, subject, content } = c;
 
     const cour_already_exist = await Cour.exist(title);
 
     if ( cour_already_exist ) {
-      return StatusCode.Conflic;
+      return { 
+        status: StatusCode.Conflic, 
+        _id: "", 
+        message: "Ce nom de cour existe deja, veuillez en choisir un nouveau" 
+      };
     }
 
     const new_cour = await cour_schema.create({
@@ -32,14 +36,31 @@ export default class Cour {
 
 
     if ( new_cour.__v !== null || new_cour.__v !== undefined ) {
-      return StatusCode.Success
+      return {
+        status: StatusCode.Success,
+        _id: new_cour._id.toString(),
+        message: ""
+      }
     }
 
-    return StatusCode.ConflicWithServer
+    return {
+      status: StatusCode.InternalError,
+      _id: "",
+      message: "Une erreur est survenu lors de la creation de votre cour, veuillez reessayer."
+    }
   }
 
-  static async update(c: F_Cour): Promise<StatusCode> {
+  static async update(c: F_Cour): Promise<{ status: StatusCode, message: string }> {
     const { _id, title, image, subject, content} = c;
+
+    const cour_already_exist = await Cour.exist(title);
+
+    if ( cour_already_exist ) {
+      return { 
+        status: StatusCode.Conflic, 
+        message: "Ce nom de cour existe deja, veuillez en choisir un nouveau" 
+      };
+    }
 
     const update_cour = await cour_schema.findOneAndUpdate(
       { _id },
@@ -54,17 +75,17 @@ export default class Cour {
       }
     );
 
-    if ( update_cour.ok && update_cour.value !== null ) return StatusCode.Success
+    if ( update_cour.ok && update_cour.value !== null ) return { status: StatusCode.Success, message: "" }
 
-    return StatusCode.NotFound
+    return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la modification de votre cour, veuillez reessayer" }
   }
 
-  static async delete(_id: string): Promise<StatusCode> {
+  static async delete(_id: string): Promise<{ status: StatusCode, message: string }> {
     const delete_cour = await cour_schema.deleteOne({ _id });
 
-    if ( delete_cour.deletedCount === 1 ) return StatusCode.Success;
+    if ( delete_cour.deletedCount === 1 ) return { status: StatusCode.Success, message: "" };
 
-    return StatusCode.NotFound;
+    return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la suppression de votre cour, veuillez reessayer." };
   }
 
   static async exist(title: string): Promise<boolean> {

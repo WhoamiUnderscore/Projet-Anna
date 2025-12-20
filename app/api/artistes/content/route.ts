@@ -2,6 +2,7 @@
 import mongoose from "mongoose"
 
 import Artiste from "@/class/artiste-class";
+import Image from "@/class/image-class"
 import Github from "@/class/github-class";
 
 import connection from "@/utils/connection";
@@ -25,14 +26,24 @@ export async function PATCH(req: Request) {
   let artiste = await Artiste.get(id);
 
   if ( !artiste ) {
-    return httpResponse(StatusCode.NotFound)
+    return httpResponse(
+      StatusCode.NotFound, 
+      undefined, 
+      "Une erreur est survenu lors de la recuperation de votre artiste dans le but de le modifier, veuillez reessayer"
+    );
   }
 
   let form_data = await req.formData();
   
   let content = form_data.get("content");
   
-  if ( !content || typeof content !== "string" ) return httpResponse(StatusCode.Unauthorized)
+  if ( !content || typeof content !== "string" ) {
+    return httpResponse(
+      StatusCode.Unauthorized,
+      undefined,
+      "Une erreur est arriver, lors de la recuperation du contenu de votre article, veuillez reessayer."
+    )
+  }
 
   let image_number = form_data.get("image_number")
   let images = []
@@ -56,6 +67,36 @@ export async function PATCH(req: Request) {
         path: "/public/images/" + img.name,
         content: await toBase64(img)
       })
+
+      const image_exist = await Image.exist(`/images/${img.name}`)
+
+      if ( !image_exist ) {
+        const new_image = await Image.new({ path: `/images/${img.name}`, id_used: [artiste.id.toString()] });
+
+        if ( new_image !== StatusCode.Success ) {
+          return httpResponse(
+            new_image, 
+            undefined, 
+            "Il y a eu une erreur lors de l'enregistrement de votre image, veuillez reessayer."
+          )
+        }
+      } else {
+        const image_db = await Image.get(`/images/${img.name}`);
+
+        if ( !image_db ) {
+          return httpResponse(
+            StatusCode.NotFound, 
+            undefined, 
+            "Une erreur est survenu, lors de l'assignement de votre image a votre artiste, veuillez reessayer"
+          )
+        }
+
+        if ( !image_db.id_used.includes(artiste._id.toString()) ) {
+          image_db.id_used.push(artiste._id.toString())
+        };
+
+        const update_image = await Image.update(image_db)
+      }
     }
   }
 
@@ -64,8 +105,11 @@ export async function PATCH(req: Request) {
     const pushed_pass = await github_manager.push_gihtub_files([...images]);
 
     if ( !pushed_pass ) {
-      console.error("ERROR GITHUB: Error pushing file")
-      return httpResponse(StatusCode.InternalError)
+      return httpResponse(
+        StatusCode.InternalError, 
+        undefined, 
+        "Il y a eu une erreur lors de la sauvegarde de votre image, veuillez reessayer."
+      );
     }
   }
 
@@ -104,5 +148,9 @@ export async function PATCH(req: Request) {
 
   if ( update_artiste.ok && update_artiste.value !== null ) return httpResponse(StatusCode.Success)
 
-  return httpResponse(StatusCode.InternalError)
+  return httpResponse(
+    StatusCode.InternalError, 
+    undefined, 
+    "Une erreur est survenu lors de la modification de votre article, veuillez reessayer."
+  )
 }

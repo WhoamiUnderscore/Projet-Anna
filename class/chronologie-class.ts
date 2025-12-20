@@ -33,13 +33,16 @@ export default class Chronologie {
   }
 
   // Add new chronologie element
-  static async new(c: B_NewChronologie): Promise<StatusCode> {
+  static async new(c: B_NewChronologie): Promise<{ status: StatusCode, message: string }> {
     let { name, from, to } = c;
 
     let is_chronologie_exist = await Chronologie.exist(name);
 
     if ( is_chronologie_exist ) {
-      return StatusCode.Conflic
+      return {
+        status: StatusCode.Conflic, 
+        message: "Le mouvement que vous essayer de cree existe deja."
+      }
     }
 
     const new_chronologie = await chronologie_schema.create({
@@ -49,10 +52,13 @@ export default class Chronologie {
     });
 
     if ( new_chronologie.__v !== null || new_chronologie.__v !== undefined ) {
-      return StatusCode.Success
+      return { status: StatusCode.Success, message: "" }
     }
 
-    return StatusCode.ConflicWithServer
+    return { 
+      status: StatusCode.ConflicWithServer, 
+      message: "Une erreur est survenu lors de l'enregistrement de votre mouvement, veuillez reessayer."
+    }
   }
 
   // Update chronologie element
@@ -63,14 +69,20 @@ export default class Chronologie {
     const prev_chronologie = await Chronologie.get_by_id(_id);
 
     if ( !prev_chronologie ) {
-      return StatusCode.NotFound
+      return { 
+        status: StatusCode.NotFound, 
+        message: "Une erreur est survenu lors de la selection du mouvement a modifier, veuillez reessayer." 
+      }
     }
 
     // Verify if a chronologie with the new name already exist
     let is_chronologie_exist = await Chronologie.exist(name);
 
     if ( is_chronologie_exist ) {
-      return StatusCode.Conflic
+      return { 
+        status: StatusCode.Conflic,
+        message: "Le nom que vous essayer d'assigner au mouvement existe deja, veuillez en choisir un autre."
+      }
     }
 
     // Get all articles relative to the chronologie element
@@ -84,30 +96,33 @@ export default class Chronologie {
         const result = await Article.update(article);
 
         if (result !== StatusCode.Success) {
-          return StatusCode.InternalError;
+          return {
+            status: StatusCode.InternalError
+            message: "Une erreur est survenu lors de la modification du nom du mouvement dans ses articles assigner, veuillez reessayer.";
+          }
         }
       }
+
+
+      const update_chronologie = await chronologie_schema.findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId(_id) },
+        {
+          name, 
+          from,
+          to
+        },
+        {
+          includeResultMetadata: true
+        }
+      );
+
+      if ( update_chronologie.ok && update_chronologie.value !== null ) return { status: StatusCode.Success, message: "" }
+
+      return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la modification de votre mouvement, veuillez reessayer" }
     }
-
-
-    const update_chronologie = await chronologie_schema.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(_id) },
-      {
-        name, 
-        from,
-        to
-      },
-      {
-        includeResultMetadata: true
-      }
-    );
-
-    if ( update_chronologie.ok && update_chronologie.value !== null ) return StatusCode.Success
-
-    return StatusCode.NotFound
   }
 
-  static async delete(_id: string): Promise<StatusCode> {
+  static async delete(_id: string): Promise<{status: StatusCode, message: string}> {
     const chronologie_name = await chronologie_schema.findOne({ _id: new mongoose.Types.ObjectId(_id)}).select("name");
     const all_articles_with_chronologie_name = await Article.get_from_mouvement(chronologie_name.name);
 
@@ -115,17 +130,21 @@ export default class Chronologie {
     all_articles_with_chronologie_name.forEach(async (el) => {
       const request = await Article.delete(el._id);
       if ( request !== StatusCode.Success) {
-        return StatusCode.InternalError;
+        return { 
+          status: StatusCode.InternalError, 
+          message: "Une erreur est survenu lors de la suppression des article assigner au mouvement, veuillez reessayer" 
+        };
       }
     })
 
-    const delete_chronologie = await chronologie_schema.deleteOne({ _id: new mongoose.Types.ObjectId(_id) })
+    const delete_chronologie = await chronologie_schema.deleteOne({ _id })
 
     if ( delete_chronologie.deletedCount === 1 ) {
-      return StatusCode.Success;
+      return { status: StatusCode.Success, message: "" };
     }
 
-    return StatusCode.NotFound;
+
+    return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la suppression de votre mouvement, veuillez reessayer." };
   }
 
   static async exist(name: string): Promise<boolean> {

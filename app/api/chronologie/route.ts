@@ -18,13 +18,11 @@ export async function GET(req: Request) {
     let chronologie_elements = await Chronologie.get(name);
 
     return httpResponse(StatusCode.Success, chronologie_elements);
-  } else {
-    let chronologie_elements = await Chronologie.get_all();
-
-    return httpResponse(StatusCode.Success, chronologie_elements);
   }
 
-  return httpResponse(StatusCode.Unauthorized);
+  let chronologie_elements = await Chronologie.get_all();
+
+  return httpResponse(StatusCode.Success, chronologie_elements);
 }
 
 export async function POST(req: Request) {
@@ -35,7 +33,7 @@ export async function POST(req: Request) {
 
   const new_chronologie = await Chronologie.new(chronologie);
   
-  return httpResponse(new_chronologie);
+  return httpResponse(new_chronologie.status, undefined, new_chronologie.message);
 }
 
 export async function PATCH(req: Request) {
@@ -46,7 +44,7 @@ export async function PATCH(req: Request) {
 
   let update_chronologie = await Chronologie.update(chronologie);
 
-  return httpResponse(update_chronologie);
+  return httpResponse(update_chronologie.status, undefined, update_chronologie.message);
 }
 
 export async function DELETE(req: Request) {
@@ -58,7 +56,7 @@ export async function DELETE(req: Request) {
   if ( id ) {
     const delete_chronologie = await Chronologie.delete(id);
 
-    return httpResponse(delete_chronologie);
+    return httpResponse(delete_chronologie.status, undefined, delete_chronologie.message);
   }
 
   return httpResponse(StatusCode.Unauthorized);

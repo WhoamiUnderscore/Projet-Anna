@@ -41,7 +41,7 @@ export default function httpResponse(status: StatusCode, data?: B_HttpResponseDa
       break
   }
 
-  if ( message_props ) {
+  if ( message_props && message_props !== "" ) {
     message = message_props
   }
 

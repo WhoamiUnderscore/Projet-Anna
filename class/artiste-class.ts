@@ -17,13 +17,17 @@ export default class Artiste {
     return artistes
   }
 
-  static async new(a: B_NewArtiste): Promise<StatusCode> {
+  static async new(a: B_NewArtiste): Promise<{ status: StatusCode, _id: string, message: string}> {
     const { name, image, metier, from, to, content } = a;
 
     const is_artiste_already_exist = await Artiste.exist(name);
 
     if ( is_artiste_already_exist ) {
-      return StatusCode.Conflic;
+      return {
+        status: StatusCode.Conflic, 
+        _id: "", 
+        message: "Le nom de votre artiste est deja enregistrer, il est impossible d'enregistrer deux artiste du meme nom."
+      };
     }
 
     const new_artiste = await artiste_model.create({
@@ -36,14 +40,32 @@ export default class Artiste {
     });
 
     if ( new_artiste.__v !== null || new_artiste.__v !== undefined ) {
-      return StatusCode.Success
+      return {
+        status: StatusCode.Success,
+        _id: new_artiste._id.toString(),
+        message: ""
+      }
     }
 
-    return StatusCode.ConflicWithServer
+    return {
+      status: StatusCode.InternalError,
+      _id: "",
+      message: "Il y a eu un probleme lors de l'enregistrement de votre artsite, veuillez reessayer"
+    }
   }
 
-  static async update(a: F_Artiste ): Promise<StatusCode> {
+  static async update(a: F_Artiste ): Promise<{status: StatusCode, message: string}> {
     const { _id, name, metier, from, to, image, content} = a;
+
+    const is_artiste_already_exist = await Artiste.exist(name);
+
+    if ( is_artiste_already_exist ) {
+      return {
+        status: StatusCode.Conflic, 
+        _id: "", 
+        message: "Le nom de votre artiste est deja enregistrer, il est impossible d'enregistrer deux artiste du meme nom."
+      };
+    }
 
     const update_artiste = await artiste_model.findOneAndUpdate(
       { _id },
@@ -60,17 +82,23 @@ export default class Artiste {
       }
     );
 
-    if ( update_artiste.ok && update_artiste.value !== null ) return StatusCode.Success
+    if ( update_artiste.ok && update_artiste.value !== null ) return { status: StatusCode.Success, message: "" }
 
-    return StatusCode.NotFound
+    return { 
+      status: StatusCode.NotFound, 
+      message: "Une erreur est survenu lors de la modification de votre arsite, veuillez reessayer" 
+    }
   }
 
-  static async delete(id: string): Promise<boolean> {
+  static async delete(id: string): Promise<{status: StatusCode, message: string}> {
     const delete_artiste = await artiste_model.deleteOne({ _id: id });
 
-    if ( delete_artiste.deletedCount === 1 ) return StatusCode.Success;
+    if ( delete_artiste.deletedCount === 1 ) return { status: StatusCode.Success, message: "" };
 
-    return StatusCode.NotFound;
+    return { 
+      status: StatusCode.NotFound, 
+      message: "Une erreur est survenu lors de la suppression de votre artiste, veuillez reessayer" 
+    };
   }
 
   static async exist(name: string): Promise<boolean> {

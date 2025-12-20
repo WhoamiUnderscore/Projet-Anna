@@ -45,7 +45,7 @@ export default class Image {
   }
 
   static async delete_if_needed(path: string, id: string): Promise<boolean> {
-    const image = await Image.get({ path });
+    const image = await Image.get(path);
     image.id_used = image.id_used.filter(i => i !== id);
 
     const update_image = await Image.update(image);

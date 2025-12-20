@@ -37,6 +37,7 @@ export default function useFetch<T>(url?: string){
       const body = await fetching_data.json();
 
       if ( body.status !== 200 ) {
+        console.log(body)
         addError(body)
       }
 
@@ -62,13 +63,13 @@ export default function useFetch<T>(url?: string){
         body: form_data
       });
       const body = await request.json();
-      addError(body)
       setFetchResult(body)
 
       if ( body.status === 200 ) {
         window.sessionStorage.clear()
         window.location.reload()
       } else {
+        console.log(body)
         addError(body)
       }
 
@@ -90,13 +91,13 @@ export default function useFetch<T>(url?: string){
         body: form_data
       });
       const body = await request.json();
-      addError(body)
       setFetchResult(body)
 
       if ( body.status === 200 ) {
         window.sessionStorage.clear()
         window.location.reload()
       } else {
+        console.log(body)
         addError(body)
       }
 
@@ -120,6 +121,7 @@ export default function useFetch<T>(url?: string){
       if ( body.status === 200 ) {
         window.location.reload()
       } else {
+        console.log(body)
         addError(body)
       }
 
