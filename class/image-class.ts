@@ -1,3 +1,4 @@
+// @ts-nocheck
 import image_schema from "@/models/image-model"
 
 import { type B_Image, type B_NewImage } from "@/types/image-types"

@@ -129,7 +129,8 @@ export async function PATCH(req: Request) {
     return httpResponse(
       StatusCode.NotFound, 
       undefined, 
-      "Une erreur est survenu lors de la recuperation de votre article dans le but de le modifier, veuillez reessayer"
+      "Une erreur est survenu lors de la recuperation de votre article dans le but de le modifier, veuillez reessayer" 
+    )
   }
 
   
@@ -172,6 +173,7 @@ export async function PATCH(req: Request) {
           "Il y a eu une erreur lors de la sauvegarde de votre image, veuillez reessayer."
         );
       }
+    }
   } else if ( 
     typeof update_article.image !== "string" && 
     `/images/${update_article.image.name}` === article.image 

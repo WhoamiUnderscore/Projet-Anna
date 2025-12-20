@@ -97,8 +97,8 @@ export default class Chronologie {
 
         if (result !== StatusCode.Success) {
           return {
-            status: StatusCode.InternalError
-            message: "Une erreur est survenu lors de la modification du nom du mouvement dans ses articles assigner, veuillez reessayer.";
+            status: StatusCode.InternalError,
+            message: "Une erreur est survenu lors de la modification du nom du mouvement dans ses articles assigner, veuillez reessayer."
           }
         }
       }

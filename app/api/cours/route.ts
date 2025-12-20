@@ -163,6 +163,7 @@ export async function PATCH(req: Request) {
           "Il y a eu une erreur lors de la sauvegarde de votre image, veuillez reessayer."
         );
       }
+    }
   } else if ( 
     typeof update_cour.image !== "string" && 
     `/images/${update_cour.image.name}` === cour.image 
