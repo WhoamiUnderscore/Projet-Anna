@@ -10,31 +10,31 @@ export default function httpResponse(status: StatusCode, data?: B_HttpResponseDa
 
   switch ( status ) {
     case StatusCode.Success :
-      message = "Votre requete a ete realiser avec succes."
+      message = "Votre requête a été réalisée avec succès."
       break
 
     case StatusCode.Redirection: 
-      message = "Vous allez etre rediriger avec une autre page."
+      message = "Vous allez être redirigé vers une autre page."
       break
 
     case StatusCode.NotFound :
-      message = "Nous n'avons pas trouver de donnees valide a votre requete."
+      message = "Nous n'avons pas trouvé de données valides à votre requête."
       break
 
     case StatusCode.Unauthorized: 
-      message = "Vous n'etes pas authoriser a realiser cette action."
+      message = "Vous n'êtes pas autorisé à réaliser cette action."
       break
 
     case StatusCode.ConflicWithServer: 
-      message = "Il y a eu une erreur coter serveur, si cela ce realiser trop souvent, veuillez me contactez."
+      message = "Il y a eu une erreur côté serveur, si cela se réalise trop souvent, veuillez me contacter."
       break
 
     case StatusCode.Conflic: 
-      message = "Il y a eu une erreur coter base de donnee, veuillez verifier que les element uniques le soient bien. Si cela se reproduit trop, veuillez me contacter."
+      message = "Il y a eu une erreur côté base de données, veuillez vérifier que les éléments uniques le soient bien. Si cela se reproduit trop, veuillez me contacter."
       break
 
     case StatusCode.InternalError:
-      message = "Il y a un erreur interne au serveur, veuillez me contactez pour la raisoudre au plus vite."
+      message = "Il y a une erreur interne au serveur, veuillez me contacter pour la résoudre au plus vite."
       break
 
     default:

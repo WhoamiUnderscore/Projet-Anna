@@ -29,7 +29,7 @@ export async function PATCH(req: Request) {
     return httpResponse(
       StatusCode.NotFound, 
       undefined, 
-      "Une erreur est survenu lors de la recuperation de votre artiste dans le but de le modifier, veuillez reessayer"
+      "Une erreur est survenue lors de la récupération de votre artiste dans le but de le modifier, veuillez réessayer"
     );
   }
 
@@ -41,7 +41,7 @@ export async function PATCH(req: Request) {
     return httpResponse(
       StatusCode.Unauthorized,
       undefined,
-      "Une erreur est arriver, lors de la recuperation du contenu de votre article, veuillez reessayer."
+      "Une erreur est arrivée, lors de la récupération du contenu de votre article, veuillez réessayer."
     )
   }
 
@@ -77,7 +77,7 @@ export async function PATCH(req: Request) {
           return httpResponse(
             new_image, 
             undefined, 
-            "Il y a eu une erreur lors de l'enregistrement de votre image, veuillez reessayer."
+            "Il y a eu une erreur lors de l'enregistrement de votre image, veuillez réessayer."
           )
         }
       } else {
@@ -87,7 +87,7 @@ export async function PATCH(req: Request) {
           return httpResponse(
             StatusCode.NotFound, 
             undefined, 
-            "Une erreur est survenu, lors de l'assignement de votre image a votre artiste, veuillez reessayer"
+            "Une erreur est survenue lors de l'assignement de votre image à votre artiste, veuillez réessayer"
           )
         }
 
@@ -108,7 +108,7 @@ export async function PATCH(req: Request) {
       return httpResponse(
         StatusCode.InternalError, 
         undefined, 
-        "Il y a eu une erreur lors de la sauvegarde de votre image, veuillez reessayer."
+        "Il y a eu une erreur lors de la sauvegarde de votre image, veuillez réessayer."
       );
     }
   }
@@ -151,6 +151,6 @@ export async function PATCH(req: Request) {
   return httpResponse(
     StatusCode.InternalError, 
     undefined, 
-    "Une erreur est survenu lors de la modification de votre article, veuillez reessayer."
+    "Une erreur est survenue lors de la modification de votre article, veuillez réessayer."
   )
 }

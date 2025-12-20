@@ -41,7 +41,7 @@ export default class Chronologie {
     if ( is_chronologie_exist ) {
       return {
         status: StatusCode.Conflic, 
-        message: "Le mouvement que vous essayer de cree existe deja."
+        message: "Le mouvement que vous essayez de créer existe déjà."
       }
     }
 
@@ -57,7 +57,7 @@ export default class Chronologie {
 
     return { 
       status: StatusCode.ConflicWithServer, 
-      message: "Une erreur est survenu lors de l'enregistrement de votre mouvement, veuillez reessayer."
+      message: "Une erreur est survenue lors de l'enregistrement de votre mouvement, veuillez réessayer."
     }
   }
 
@@ -71,7 +71,7 @@ export default class Chronologie {
     if ( !prev_chronologie ) {
       return { 
         status: StatusCode.NotFound, 
-        message: "Une erreur est survenu lors de la selection du mouvement a modifier, veuillez reessayer." 
+        message: "Une erreur est survenue lors de la sélection du mouvement à modifier, veuillez réessayer." 
       }
     }
 
@@ -81,7 +81,7 @@ export default class Chronologie {
     if ( is_chronologie_exist ) {
       return { 
         status: StatusCode.Conflic,
-        message: "Le nom que vous essayer d'assigner au mouvement existe deja, veuillez en choisir un autre."
+        message: "Le nom que vous essayez d'assigner au mouvement existe déjà, veuillez en choisir un autre."
       }
     }
 
@@ -98,7 +98,7 @@ export default class Chronologie {
         if (result !== StatusCode.Success) {
           return {
             status: StatusCode.InternalError,
-            message: "Une erreur est survenu lors de la modification du nom du mouvement dans ses articles assigner, veuillez reessayer."
+            message: "Une erreur est survenue lors de la modification du nom du mouvement dans ses articles assignés, veuillez réessayer."
           }
         }
       }
@@ -118,7 +118,7 @@ export default class Chronologie {
 
       if ( update_chronologie.ok && update_chronologie.value !== null ) return { status: StatusCode.Success, message: "" }
 
-      return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la modification de votre mouvement, veuillez reessayer" }
+      return { status: StatusCode.NotFound, message: "Une erreur est survenue lors de la modification de votre mouvement, veuillez réessayer" }
     }
   }
 
@@ -132,7 +132,7 @@ export default class Chronologie {
       if ( request !== StatusCode.Success) {
         return { 
           status: StatusCode.InternalError, 
-          message: "Une erreur est survenu lors de la suppression des article assigner au mouvement, veuillez reessayer" 
+          message: "Une erreur est survenue lors de la suppression des articles assignés au mouvement, veuillez réessayer"
         };
       }
     })
@@ -144,7 +144,7 @@ export default class Chronologie {
     }
 
 
-    return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la suppression de votre mouvement, veuillez reessayer." };
+    return { status: StatusCode.NotFound, message: "Une erreur est survenue lors de la suppression de votre mouvement, veuillez réessayer." };
   }
 
   static async exist(name: string): Promise<boolean> {

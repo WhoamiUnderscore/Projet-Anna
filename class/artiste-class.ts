@@ -26,7 +26,7 @@ export default class Artiste {
       return {
         status: StatusCode.Conflic, 
         _id: "", 
-        message: "Le nom de votre artiste est deja enregistrer, il est impossible d'enregistrer deux artiste du meme nom."
+        message: "Le nom de votre artiste est déjà enregistré, il est impossible d'enregistrer deux artistes du même nom."
       };
     }
 
@@ -50,7 +50,7 @@ export default class Artiste {
     return {
       status: StatusCode.InternalError,
       _id: "",
-      message: "Il y a eu un probleme lors de l'enregistrement de votre artsite, veuillez reessayer"
+      message: "Il y a eu un problème lors de l'enregistrement de votre artiste, veuillez réessayer"
     }
   }
 
@@ -63,7 +63,7 @@ export default class Artiste {
       return {
         status: StatusCode.Conflic, 
         _id: "", 
-        message: "Le nom de votre artiste est deja enregistrer, il est impossible d'enregistrer deux artiste du meme nom."
+        message: "Le nom de votre artiste est déjà enregistré, il est impossible d'enregistrer deux artistes du même nom."
       };
     }
 
@@ -86,7 +86,7 @@ export default class Artiste {
 
     return { 
       status: StatusCode.NotFound, 
-      message: "Une erreur est survenu lors de la modification de votre arsite, veuillez reessayer" 
+      message: "Une erreur est survenue lors de la modification de votre artiste, veuillez réessayer" 
     }
   }
 
@@ -97,7 +97,7 @@ export default class Artiste {
 
     return { 
       status: StatusCode.NotFound, 
-      message: "Une erreur est survenu lors de la suppression de votre artiste, veuillez reessayer" 
+      message: "Une erreur est survenue lors de la suppression de votre artiste, veuillez réessayer" 
     };
   }
 

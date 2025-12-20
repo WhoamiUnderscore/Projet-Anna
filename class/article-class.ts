@@ -39,7 +39,7 @@ export default class Article {
       return { 
         status: StatusCode.Conflic, 
         _id: "", 
-        message: "Un article existe deja avec un nom similaire, veuillez en choisir un nouveau." 
+        message: "Un article existe déjà avec un nom similaire, veuillez en choisir un nouveau." 
       };
     }
 
@@ -63,7 +63,7 @@ export default class Article {
     return {
       status: StatusCode.InternalError,
       _id: "",
-      message: "Une erreur est survenu lors de la creation de votre article, veuillez reessayer."
+      message: "Une erreur est survenue lors de la création de votre article, veuillez réessayer."
     }
   }
 
@@ -88,7 +88,7 @@ export default class Article {
 
     if ( update_article.ok && update_article.value !== null ) return { status: StatusCode.Success, message: "" }
 
-    return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la modification de votre article, veuillez reessayer" }
+    return { status: StatusCode.NotFound, message: "Une erreur est survenue lors de la modification de votre article, veuillez réessayer" }
   }
 
   // Delete the article
@@ -97,7 +97,7 @@ export default class Article {
 
     if ( delete_article.deletedCount === 1 ) return { status: StatusCode.Success, message: "" };
 
-    return { status: StatusCode.NotFound, message: "Une erreur est survenu lors de la suppression de votre article, veuillez reessayer" };
+    return { status: StatusCode.NotFound, message: "Une erreur est survenue lors de la suppression de votre article, veuillez réessayer" };
   }
 
   // See if the article already exist

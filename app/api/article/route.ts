@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     return httpResponse(
       StatusCode.Unauthorized, 
       undefined, 
-      "Veuillez mettre une image approprier afin de cree un article"
+      "Veuillez mettre une image appropriée afin de créer un article"
     );
   }
 
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
       return httpResponse(
         new_image, 
         undefined, 
-        "Il y a eu une erreur lors de l'enregistrement de votre image, veuillez reessayer."
+        "Il y a eu une erreur lors de l'enregistrement de votre image, veuillez réessayer."
       )
     }
 
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
       return httpResponse(
         StatusCode.InternalError, 
         undefined, 
-        "Il y a eu une erreur lors de la sauvegarde de votre image, veuillez reessayer."
+        "Il y a eu une erreur lors de la sauvegarde de votre image, veuillez réessayer."
       );
     }
   }
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
     return httpResponse(
       StatusCode.NotFound, 
       undefined, 
-      "Une erreur est survenu, lors de l'assignement de votre image a votre article, veuillez reessayer"
+      "Une erreur est survenue lors de l'assignement de votre image à votre article, veuillez réessayer"
     )
   }
 
@@ -119,7 +119,7 @@ export async function PATCH(req: Request) {
     return httpResponse(
       StatusCode.Unauthorized, 
       undefined, 
-      "Veuillez mettre une image approprier afin de cree un article"
+      "Veuillez mettre une image appropriée afin de créer un article"
     );
   }
 
@@ -129,7 +129,7 @@ export async function PATCH(req: Request) {
     return httpResponse(
       StatusCode.NotFound, 
       undefined, 
-      "Une erreur est survenu lors de la recuperation de votre article dans le but de le modifier, veuillez reessayer" 
+      "Une erreur est survenue lors de la récupération de votre article dans le but de le modifier, veuillez réessayer"
     )
   }
 
@@ -159,7 +159,7 @@ export async function PATCH(req: Request) {
         return httpResponse(
           new_image, 
           undefined, 
-          "Il y a eu une erreur lors de l'enregistrement de votre image, veuillez reessayer."
+          "Il y a eu une erreur lors de l'enregistrement de votre image, veuillez réessayer."
         )
       }
 
@@ -170,7 +170,7 @@ export async function PATCH(req: Request) {
         return httpResponse(
           StatusCode.InternalError, 
           undefined, 
-          "Il y a eu une erreur lors de la sauvegarde de votre image, veuillez reessayer."
+          "Il y a eu une erreur lors de la sauvegarde de votre image, veuillez réessayer."
         );
       }
     }
@@ -202,7 +202,7 @@ export async function DELETE(req: Request) {
     return httpResponse(
       StatusCode.NotFound, 
       undefined, 
-      "Une erreur est arriver lors de la determination de l'article a supprimer, veuillez reessayer."
+      "Une erreur est arrivée lors de la détermination de l'article à supprimer, veuillez réessayer."
     );
   }
 

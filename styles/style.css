@@ -835,3 +835,37 @@ textarea {
   grid: auto / 1fr 1fr 1fr;
   gap: 30px;
 }
+
+/* Loading */
+.loading {
+  position: absolute;
+  z-index: 999;
+  width: 100vw;
+  height: 100svh;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .3s;
+
+  .loader {
+    width: 250px;
+    height: 10px;
+    border-radius: 20px;
+    background: lightgrey;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      display: block;
+      border-radius: 20px;
+      width: 0;
+      height: 100%;
+      background: #dda15e;
+      animation: loader-animation 2.5s infinite linear;
+    }
+
+  }
+}

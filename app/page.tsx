@@ -11,12 +11,10 @@ import { type F_ChronologieElement } from "@/types/chronologie-types"
 export default function Home() {
   const { loading, fetchResult } = useFetch<F_ChronologieElement>("/chronologie");
 
-  if ( loading ) {
-    return <Loading />
-  }
-
   return (
     <main className="chronologie-page">
+      <Loading loading={loading} />
+
       <Navbar dashboard={false} />
       {
         fetchResult.status === 200 && fetchResult.data.length > 0 ?
