@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 
 import useFetch from "@/hook/useFetch";
 
@@ -13,7 +13,7 @@ export function NewChronologie({currentState, elementsLength } : { currentState:
     from: 0,
     to: 0 
   })
-
+  
   const { postDatas } = useFetch<B_NewChronologie>()
 
   function isElementFilled() {
@@ -23,7 +23,7 @@ export function NewChronologie({currentState, elementsLength } : { currentState:
   }
 
   return (
-    <li className="chronologie-element-container new-element">
+    <li className="chronologie-element-container">
       <span className={`chronologie-element ${currentState === elementsLength ? "chronologie-element-active" : ""}`}></span>
 
       {
@@ -100,20 +100,51 @@ export function NewChronologie({currentState, elementsLength } : { currentState:
 
 
 
-export function UpdateChronologie({ element, is_first, setState }: { element: F_Chronologie, is_first: boolean, setState: () => void }) {
+export function UpdateChronologie({ element, is_first, toggleView, enable }: { element: F_Chronologie, is_first: boolean, toggleView: (view: string) => void, enable: boolean }) {
   const [updatedElement, setUpdatedElement] = useState(element);
+  const [changingView, setChangingView] = useState<boolean>(false)
 
   const { updateData } = useFetch();
+  const containerRef = useRef<HTMLDivElement>(null)
+
+
+  useEffect(() => {
+    if ( enable ) {
+      containerRef.current.style.setProperty("display", "flex");
+      setTimeout(() => {
+        containerRef.current.style.setProperty("opacity", "1");
+      }, 500)
+    } else {
+      setChangingView(false)
+      containerRef.current.style.setProperty("opacity", "0");
+      setTimeout(() => {
+        containerRef.current.style.setProperty("display", "none");
+      }, 500)
+    };
+  }, [enable, containerRef])  
+
+  useEffect(() => {
+    if ( !containerRef || !containerRef.current || !changingView ) return
+      
+    function handleTransitionEnd(event: TransitionEvent) {
+      const el = event.target as HTMLLinkElement;
+      el.style.setProperty("display", "none");
+    }
+
+    containerRef.current.addEventListener("transitionend", handleTransitionEnd);
+
+    return () => {
+      containerRef.current?.removeEventListener("transitionend", handleTransitionEnd);
+    };
+  }, [containerRef, changingView])
+
 
   return (
-    <li className="chronologie-element-container new-element">
-      <span className="chronologie-element chronologie-element-active" style={{ animationName: "unset !important"}}></span>
-
-      {
-        !is_first && <span className="prev-link"></span>
-      }
-
-      <div>
+      <div 
+        className="new-element"
+        style={ enable ? { display: "flex" } : { pointerEvents: "none", opacity: 0 }} 
+        ref={containerRef}
+      >
         <input 
           className="update-element-name" 
           placeholder="Nouvelle element" 
@@ -169,7 +200,10 @@ export function UpdateChronologie({ element, is_first, setState }: { element: F_
 
         <button 
           className="close-chronologie-edit" 
-          onClick={() => setState(false)}
+          onClick={() => {
+            setChangingView(true)
+            toggleView("view")
+          }}
         />
         <button 
           className="update-element-button" 
@@ -179,7 +213,6 @@ export function UpdateChronologie({ element, is_first, setState }: { element: F_
         Valider
         </button>
       </div>
-    </li>
   )
 }
 

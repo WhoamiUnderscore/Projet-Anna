@@ -170,6 +170,18 @@ export async function PATCH(req: Request) {
   ) {
     update_cour.image = cour.image
   }
+
+  if ( cour.title !== update_cour.title ) {
+    let exist = await Cour.exist(update_cour.title);
+
+    if (exist) {
+      return httpResponse( 
+        StatusCode.Conflic,
+        undefined,
+        "Le nom que vous essayez d'assigner au cour existe déjà, veuillez en choisir un autre."
+      )
+    }
+  }
   
   const updating_cour = await Cour.update(update_cour);
   return httpResponse(updating_cour.status, undefined, updating_cour.message);

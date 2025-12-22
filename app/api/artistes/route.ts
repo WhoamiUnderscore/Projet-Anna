@@ -170,6 +170,18 @@ export async function PATCH(req: Request) {
   ) {
     update_artiste.image = artiste.image
   }
+
+  if ( update_artiste.name !== artiste.name ) {
+    let exist = await Artiste.exist(update_artiste.name)
+
+    if ( exist ) {
+      return httpResponse( 
+        StatusCode.Conflic,
+        undefined,
+        "Le nom que vous essayez d'assigner à l'artiste existe déjà, veuillez en choisir un autre."
+      )
+    }
+  }
   
   const updating_artiste = await Artiste.update(update_artiste);
   return httpResponse(updating_artiste.status, undefined, updating_artiste.message);

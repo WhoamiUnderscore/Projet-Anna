@@ -180,6 +180,18 @@ export async function PATCH(req: Request) {
   ) {
     update_article.image = article.image
   }
+
+  if ( updateArticle.title !== article.title ) {
+    let exist = await Article.exist(updateArticle.title)
+
+    if ( exist ) {
+      return httpResponse( 
+        StatusCode.Conflic,
+        undefined,
+        "Le nom que vous essayez d'assigner à l'article existe déjà, veuillez en choisir un autre."
+      )
+    }
+  }
   
   const updating_article = await Article.update(update_article);
 

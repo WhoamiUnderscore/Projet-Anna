@@ -31,12 +31,21 @@
   }
 }
 
-@keyframes chronologie-name-appear {
+@keyframes appear {
   from {
     opacity: 0;
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes appear-buttons {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: .4;
   }
 }
 

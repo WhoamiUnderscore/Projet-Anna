@@ -11,7 +11,7 @@ import { type F_Artiste, type F_NewArtiste } from "@/types/artiste-types"
 
 export function ArtisteComponent({ artiste }: { artiste: F_Artiste }) {
   return (
-    <a href={`/artiste/${artiste._id}`} className="artiste-container">
+    <a href={`/artistes/${artiste._id}`} className="artiste-container">
       <div className="image-container">
         <img src={artiste.image} alt="image de cour non charger" />
       </div>

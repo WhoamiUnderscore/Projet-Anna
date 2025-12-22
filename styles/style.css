@@ -28,6 +28,7 @@ body {
 }
 
 .chronologie-page {
+  position: relative;
   background-color: #dda15e;
   height: 100svh;
   width: 100vw;
@@ -109,20 +110,33 @@ body {
 }
 
 .chronologie-element-container {
-  max-width: 50px;
+  max-width: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 10px;
   position: relative;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  a {
+    transition: opacity .7s;
+  }
 }
 
-.new-element div {
+.new-element{
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  opacity: 0;
+  transition: opacity .5s;
 }
 
 .new-element-name, .update-element-name {
@@ -169,6 +183,7 @@ body {
   font-weight: 600;
   border-radius: 10px;
   opacity: 0;
+  display: flex !important;
   transition: color .2s,
               background .2s,
               opacity .3s;
@@ -255,7 +270,7 @@ body {
 .chronologie-info {
   text-align: center;
   opacity: 0;
-  animation: chronologie-name-appear 1s linear forwards;
+  animation: appear 1s linear forwards;
   animation-delay: 1.2s;
 
   p:nth-child(1) {
@@ -274,21 +289,32 @@ body {
 
 .chronologie-dashboard {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  opacity: 0;
-  animation: chronologie-name-appear .5s linear forwards;
-  animation-delay: .3s;
+  justify-content: center;
+  width: 100%;
 
-  span {
-    cursor: pointer;
-    opacity: .4;
+
+  .buttons-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
     transition: opacity .4s;
+    width: 100%;
 
-    &:hover {
-      opacity: 1;
+    span {
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .4s;
+      animation: appear-buttons .5s linear forwards;
+
+      &:hover {
+        opacity: 1 !important;
+      }
     }
   }
+
 }
 
 .prev-link {
@@ -338,6 +364,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  opacity: 0;
+  animation: appear .5s linear forwards;
 
   p {
     width: 300px;
@@ -838,6 +866,7 @@ textarea {
 
 /* Loading */
 .loading {
+  pointer-events: none;
   position: absolute;
   z-index: 999;
   width: 100vw;

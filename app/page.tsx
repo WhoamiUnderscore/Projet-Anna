@@ -16,6 +16,7 @@ export default function Home() {
       <Loading loading={loading} />
 
       <Navbar dashboard={false} />
+
       {
         fetchResult.status === 200 && fetchResult.data.length > 0 ?
           <Chronologie elements={fetchResult.data} dashboard={false}/>

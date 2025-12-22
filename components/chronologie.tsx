@@ -1,14 +1,17 @@
 // @ts-nocheck
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import useFetch from "@/hook/useFetch"
 import { NewChronologie, UpdateChronologie } from "@/components/chronologie-dashboard"
+import DashboardTools from "@/components/dashboard-tools"
 
 import { type F_ChronologieElement } from "@/types/chronologie-types"
+import { type DashboardElementState } from "@/types/dashboard-types"
 
 type Props = {
   elements: F_ChronologieElement[],
@@ -38,11 +41,18 @@ export default function Chronologie({ elements, dashboard }: Props) {
     <div className="next" onClick={() => moveChronologie(false)}></div>
     <div className="previous" onClick={() => moveChronologie(true)}></div>
 
-    <ul className="chronologie-container" style={{ width: `calc(100vw * ${elements.length == 0 ? 1 : elements.length})`, transform: `translateX(calc((-50vw - 50px) * ${currentState} ))`}}>
+    <ul 
+      className="chronologie-container" 
+      style={{ 
+        width: `calc(100vw * ${elements.length == 0 ? 1 : elements.length})`, 
+        transform: `translateX(calc((-50vw - 50px) * ${currentState} ))`}}
+      >
       {
-        elements.map((el, i) => <ChronologieElement key={i} element={el} index={i} currentState={currentState} dashboard={dashboard}/>)
+        elements.map((e, i) => <ChronologieElement key={i} element={e} index={i} currentState={currentState} dashboard={dashboard}/>)
       }
+
       {
+        // If dashboard is activate -> add new chronologie component
         dashboard && <NewChronologie currentState={currentState} elementsLength={elements.length} />
       }
     </ul>
@@ -55,53 +65,82 @@ export default function Chronologie({ elements, dashboard }: Props) {
 
 
 
-function ChronologieElement({ element, index, currentState, dashboard }: { element: F_ChronologieElement, index: number, currentState: number, dashboard: boolean }) {
-  const [updateElement, setUpdateElement] = useState(false);
-  const [deleteElement, setDeleteElement] = useState(false)
-  const { deleteData } = useFetch();
+function ChronologieElement({ 
+  element, 
+  index, 
+  currentState, 
+  dashboard 
+}: { 
+  element: F_ChronologieElement, 
+  index: number, 
+  currentState: number, 
+  dashboard: boolean 
+}) {
+  const [elementState, setElementState] = useState<DashboardElementState>("view")
 
-  if ( updateElement ) {
-    return <UpdateChronologie element={element} is_first={index === 0} setState={setUpdateElement}/>
-  }
+  const textRef = useRef<HTMLLinkElement>(null)
 
-  return <li className="chronologie-element-container">
-    { 
-      // Line before element if he is not the first one
+  const isDashboardLink = `${dashboard ? "/dashboard" : ""}/mouvements/${element.name.toLowerCase()}`
+  const toggleView = (view: DashboardElementState) => setElementState(view);
+
+  useEffect(() => {
+    if ( !textRef || !textRef.current ) return
+
+    function handleTransitionEnd(event: TransitionEvent) {
+      const el = event.target as HTMLLinkElement;
+      el.style.setProperty("display", "none");
     }
-    <span className={`chronologie-element ${currentState === index ? "chronologie-element-active" : ""}`}></span>
-    {
-      index > 0 && <span className="prev-link"></span>
-    }
 
-    {
-      // If deleteElement, don't display to minimize the number of element in the screen
-      !deleteElement && <a href={ dashboard ? `/dashboard/mouvements/${element.name.toLowerCase()}` : `/mouvements/${element.name.toLowerCase()}`}>
+    textRef.current.addEventListener("transitionend", handleTransitionEnd);
+
+    return () => {
+      textRef.current?.removeEventListener("transitionend", handleTransitionEnd);
+    };
+  }, [textRef])
+
+  useEffect(() => {
+    if ( elementState === "view" && textRef && textRef.current ) {
+      const timeout = setTimeout(() => {
+        textRef.current.style.display = "flex";
+        textRef.current.style.opacity = 1;
+      }, 490)
+    }
+  }, [elementState, textRef])
+
+  return (
+    <li className="chronologie-element-container">
+      <Link 
+        href={isDashboardLink} 
+        className={`chronologie-element ${currentState === index ? "chronologie-element-active" : ""}`}
+      >
+      </Link>
+
+      {
+        index > 0 && <span className="prev-link"></span>
+      }
+
+      <Link 
+        href={isDashboardLink} 
+        ref={textRef}
+      >
         <div className="chronologie-info">
           <p>{element.name}</p>
           <p>{element.from} - {element.to}</p>
         </div>
-      </a>
-    }
+      </Link>
 
-    {
-      // Delete and Edit button
-      !deleteElement && dashboard && <section className="chronologie-dashboard">
-        <span style={{color: ""}} onClick={() => setUpdateElement(true)}><FontAwesomeIcon icon={faPenToSquare} /></span>        
-        <span style={{color: "#d90429"}} onClick={() => setDeleteElement(true)}><FontAwesomeIcon icon={faTrash} /></span>        
-      </section>
-    }
+      <UpdateChronologie element={element} is_first={index === 0} toggleView={toggleView} enable={elementState === "edit"}/>
 
-    {
-      // if deleteElement, remove all informations and display this "popup" prevention to prevent miss-click
-      deleteElement && <section className="pop-up-delete-chronologie">
-        <p>Est tu sur de vouloir supprimer le mouvement <strong>{element.name}</strong> ?</p>
 
-        <div className="pop-up-button-container">
-          <button className="delete-button" onClick={() => deleteData(`/chronologie?id=${element._id}`)}>Supprimer</button>
-          <button className="return-button" onClick={() => setDeleteElement(false)}>Annuler</button>
-        </div>
-      </section>
+      {
+        dashboard && elementState !== "edit" && 
+          <DashboardTools 
+            toggleView={toggleView} 
+            state={elementState} 
+            element={element} 
+            ref={textRef}
+          />
     }
-  </li>
+    </li>
+  )
 }
-

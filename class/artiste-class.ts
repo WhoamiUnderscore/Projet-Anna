@@ -57,16 +57,6 @@ export default class Artiste {
   static async update(a: F_Artiste ): Promise<{status: StatusCode, message: string}> {
     const { _id, name, metier, from, to, image, content} = a;
 
-    const is_artiste_already_exist = await Artiste.exist(name);
-
-    if ( is_artiste_already_exist ) {
-      return {
-        status: StatusCode.Conflic, 
-        _id: "", 
-        message: "Le nom de votre artiste est déjà enregistré, il est impossible d'enregistrer deux artistes du même nom."
-      };
-    }
-
     const update_artiste = await artiste_model.findOneAndUpdate(
       { _id },
       {
