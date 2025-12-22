@@ -9,10 +9,11 @@ export type F_Article = {
 }
 
 export type F_NewArticle = {
+  _id?: string,
   title: string,
   artiste: string,
   date: number,
-  image: File,
+  image: File | string,
   image_preview: string,
   mouvement: string,
   content: string
@@ -30,6 +31,7 @@ export type B_Article = {
 }
 
 export type B_NewArticle = {
+  _id?: string,
   title: string,
   artiste: string,
   date: number,

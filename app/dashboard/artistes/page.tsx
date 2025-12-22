@@ -7,13 +7,12 @@ import { useParams } from "next/navigation"
 import useFetch from "@/hook/useFetch"
 import { ArtisteForm, ArtisteDashboardComponent } from "@/components/artiste-component"
 import Loading from "@/components/loading"
+import Filter from "@/components/filter-component"
 
 import { type F_Artiste, type F_NewArtiste } from "@/types/artiste-types"
 
-export default function UpdateCour() {
-  const [currentArtistes, setCurrentArtistes] = useState<F_Artiste[]>(null)
-  const [search, setSearch] = useState<String>("");
-  const [artistFilter, setArtistFilter] = useState([])
+export default function UpdateArtiste() {
+  const [currentArtistes, setCurrentArtistes] = useState<F_Artiste[]>([])
 
   const { loading, fetchResult } = useFetch<F_Artiste>('/artistes')
 
@@ -25,39 +24,20 @@ export default function UpdateCour() {
     }
   }, [loading, fetchResult])
 
-  useEffect(() => {
-    if ( currentArtistes === null ) return 
-
-    function filter_by_name(input: F_Artiste[], search_value: string): F_Artiste[] {
-      return input.filter(a => a.name.toLowerCase().includes(search_value.toLowerCase()));
-    }
-
-    let all_artistes = fetchResult.data;
-
-    if ( search.length > 3 ) {
-      all_artistes = filter_by_name(all_artistes, search)
-    }
-
-    setCurrentArtistes(all_artistes)
-  }, [search])
-
-  if ( loading ) {
-    return <Loading />
-  }
-
   return <main className="artistes-page">
+    <Loading loading={loading} />
+
     <a href="/dashboard" className="return">Retour</a>
 
-      {
-        currentArtistes !== null && (
-          <section className="search-section">
-            <input 
-              className="search-article" 
-              value={search} 
-              onChange={(e) => setSearch(e.target.value)} 
-              placeholder="Nom de l'oeuvre..."
-            />
-        </section>
+    {
+      currentArtistes !== null && (
+        <Filter 
+          elements={currentArtistes}
+          backup_elements={fetchResult.data}
+          filterProps={{ value: "metier", text: "Choisissez un metier..." }}
+          searchProps={{ value: "name", text: "Nom de l'artiste..."}}
+          setElement={setCurrentArtistes}
+        />
       )
     }
 
@@ -72,10 +52,7 @@ export default function UpdateCour() {
             <p>Aucun element correspond a ta recherche</p>
       }
 
-      {
-        search.length <= 3 &&
-        <ArtisteForm/>
-      }
+      <ArtisteForm/>
     </ul>
   </main>
 }

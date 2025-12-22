@@ -38,11 +38,8 @@ export default function ArticlePage(){
     return <p>Impossible de trouver l'article demander</p>
   }
 
-  if ( loading ) {
-    return <Loading />
-  }
-
   return <main className="article-page">
+    <Loading loading={loading} />
       <a href={`/mouvements/${article.mouvement.toLowerCase()}`} className="return">Retour</a>
 
     <div className="article-informations-container">

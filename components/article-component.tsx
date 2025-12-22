@@ -1,20 +1,20 @@
-// @ts-nocheck
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
+import Link from "next/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import useFetch from "@/hook/useFetch"
+import DashboardTools from "@/components/dashboard-tools"
 
-import { type F_Article } from "@/types/article-types"
+import { type F_Article, type F_NewArticle, B_NewArticle } from "@/types/article-types"
+import { type DashboardElementState } from "@/types/dashboard-types"
 
 export function ArticleComponent({ article }: { article: F_Article } ) {
   return <a href={`/articles/${article._id}`} className="article-container">
     <div className="image-container">
-      <img className="article-image" src={article.image} />
-    </div>
-
+      <img className="article-image" src={article.image} /> </div>
     <section className="article-information-container">
       <h3>{article.title}</h3>
       <p>{article.artiste} - {article.date}</p>
@@ -30,58 +30,44 @@ export function ArticleComponent({ article }: { article: F_Article } ) {
 
 
 export function ArticleDashboard({ article }: { article: F_Article } ) {
-  const [deleteElement, setDeleteElement] = useState(false)
-  const [updateElement, setUpdateElement] = useState(false)
+  const [elementState, setElementState] = useState<DashboardElementState>("view")
 
-  const { deleteData } = useFetch();
-
-  if ( updateElement ) {
-    return <ArticleForm default_value={article} mouvement={article.mouvement} />
-  }
+  const toggleView = (view: DashboardElementState) => setElementState(view);
 
   return <section className="article-container">
-    <a href={`/dashboard/articles/${article._id}`} className="image-container" style={{ pointerEvents: "all"}}>
+    <Link 
+      href={`/dashboard/articles/${article._id}`}
+      className="image-container" 
+      style={ elementState !== "edit" ? { pointerEvents: "all"} : { display: "none" }}
+    >
       <img className="article-image" src={article.image} />
-    </a>
+    </Link>
+
+    <Link 
+      href={`/dashboard/articles/${article._id}`}
+      className="article-information-container"
+    >
+      <h3>{article.title}</h3>
+      <p>{article.artiste} - {article.date}</p>
+    </Link>
+
+    <ArticleForm 
+      default_value={{
+        ...article,
+        image_preview: article.image,
+      } as F_NewArticle} 
+      mouvement={article.mouvement} 
+      toggleView={toggleView}
+      enable={elementState === "edit"}
+    />
 
     {
-      // if deleteElement, remove information to minimize the number of informations
-      !deleteElement && (
-        <section className="article-information-container">
-          <h3>{article.title}</h3>
-          <p>{article.artiste} - {article.date}</p>
-        </section>
-      )
-    }
-
-    {
-      // Delete and Edit button
-      !deleteElement && <section className="chronologie-dashboard">
-        <span style={{color: ""}} onClick={() => setUpdateElement(true)}><FontAwesomeIcon icon={faPenToSquare} /></span>        
-        <span style={{color: "#d90429"}} onClick={() => setDeleteElement(true)}><FontAwesomeIcon icon={faTrash} /></span>        
-      </section>
-    }
-
-    {
-        // Remove all information and display a "popup" delete prevention to prevent miss-click
-        deleteElement && <section className="pop-up-delete-article">
-        <p>Est tu sur de vouloir supprimer le mouvement <strong>{article.title}</strong> ?</p>
-
-        <div className="pop-up-button-container">
-          <button 
-            className="delete-button" 
-            onClick={() => deleteData(`/article?id=${article._id}`)}
-          >
-            Supprimer
-          </button>
-          <button 
-            className="return-button" 
-            onClick={() => setDeleteElement(false)}
-          >
-          Annuler
-          </button>
-        </div>
-      </section>
+      elementState !== "edit" && 
+        <DashboardTools 
+          toggleView={toggleView} 
+          state={elementState} 
+          element={article} 
+        />
     }
   </section>
 }
@@ -94,6 +80,8 @@ export function ArticleDashboard({ article }: { article: F_Article } ) {
 
 
 export function ArticleForm({
+  enable = true,
+  toggleView,
   mouvement,
   default_value = {
     title: "" ,
@@ -104,40 +92,26 @@ export function ArticleForm({
     mouvement: "",
     content: ""
   }
-}: { mouvement: string, default_value: F_NewArticle }) {
+}: { 
+  mouvement: string, 
+  enable?: boolean, 
+  toggleView?: ((view: DashboardElementState) => void) | undefined
+  default_value?: F_NewArticle, 
+}) {
   const [newArticle, setNewArticle] = useState<F_NewArticle>(default_value)
 
-  const { loading, postDatas, updateData } = useFetch()
-
-  useEffect(() => {
-    if ( newArticle._id ) {
-      setNewArticle((prev) => ({
-        ...prev,
-        image_preview: prev.image
-      }))
-    } else {
-      let final_mouvement_name: string[] = [];
-
-      mouvement.split("%20").forEach(word => { // Split at url space
-        const mouvement_post = word.charAt(0).toUpperCase() + word.slice(1);
-        final_mouvement_name.push(mouvement_post)
-      })
-
-      setNewArticle((prev) => ({
-        ...prev,
-        mouvement: final_mouvement_name.join(" ")
-      }))
-    }
-  }, [])
+  const { postDatas, updateData } = useFetch()
 
   function isArticleFilled() {
     const { title, artiste, date, image, mouvement } = newArticle;
 
-    return title !== "" && artiste !== "" && date !== 0 && image !== "" 
+    return title !== "" && artiste !== "" && date !== 0 && image !== ""
   }
 
   function handleSave() {
     const { title, artiste, content, date, image, mouvement } = newArticle;
+
+    if ( !image ) return
 
     let validData: B_NewArticle = {
       title,
@@ -148,29 +122,36 @@ export function ArticleForm({
       content
     } 
 
-    if ( default_value._id ) {
+    if ( newArticle._id ) {
       validData._id = newArticle._id;
 
-      updateData<F_Article>(validData, "/article")
+      updateData<B_NewArticle>(validData, "/article")
     } else {
       postDatas<B_NewArticle>(validData, "/article")
     }
   }
 
   return (
-    <article className="article-container">
+    <article 
+      className="article-container"
+      style={
+          !toggleView ? // Is not an editable article 
+            { } :
+            enable ?
+              { position: "absolute", display: "flex" } :
+              { display: "none" } 
+      }
+    >
       {
         // Img -> Display image choose
         // Input -> Choose the image to display ( invisible )
       }
       <div className="image-container">
-        <img 
-          className="article-image" 
-          src={newArticle.image_preview ? newArticle.image_preview : null} 
-        />
         <input 
           type="file" 
-          onChange={(e) => setNewArticle((prev) => {
+          onChange={(e) => setNewArticle((prev: F_NewArticle) => {
+            if ( !e.target.files ) return prev
+
             const file = e.target.files[0]
             const imageURL = URL.createObjectURL(file)
 
@@ -184,7 +165,12 @@ export function ArticleForm({
 
         {
           // If there is no image choose, display a little +
-          !newArticle.image_preview && <div className="input-style" />
+          !newArticle.image_preview ?
+            <div className="input-style" /> : 
+            <img 
+              className="article-image" 
+              src={newArticle.image_preview} 
+            />
         }
       </div>
 
@@ -193,7 +179,7 @@ export function ArticleForm({
           className="title-input" 
           value={newArticle.title} 
           placeholder={"Titre"} 
-          onChange={(e) => setNewArticle((prev) => ({ ...prev, title: e.target.value}))}
+          onChange={(e) => setNewArticle((prev: F_NewArticle) => ({ ...prev, title: e.target.value}))}
         />
 
         <div> 
@@ -201,7 +187,7 @@ export function ArticleForm({
             className="artiste-value" 
             placeholder="artiste" 
             value={newArticle.artiste} 
-            onChange={(e) => setNewArticle((prev) => ({...prev, artiste: e.target.value}))} 
+            onChange={(e) => setNewArticle((prev: F_NewArticle) => ({...prev, artiste: e.target.value}))} 
           /> 
 
           <span>-</span>
@@ -210,7 +196,7 @@ export function ArticleForm({
             className="date-value" 
             pattern="[0-9]*"
             value={newArticle.date} 
-            onChange={(e) => setNewArticle((prev) => {
+            onChange={(e) => setNewArticle((prev: F_NewArticle) => {
               const onlyNumbers = e.target.value.replace(/\D/g, "");
               return { ...prev, date: Number(onlyNumbers)}
             })} 
@@ -218,6 +204,8 @@ export function ArticleForm({
         </div>
       </section>
 
+
+      <div className="buttons-container">
       {
         isArticleFilled() && (
           <button 
@@ -228,6 +216,15 @@ export function ArticleForm({
           </button>
         )
       }
+      {
+        toggleView && <button 
+            className="close-edit-view" 
+            onClick={() => toggleView("view")}
+            >
+              Retour
+            </button>
+      }
+      </div>
     </article>
   )
 }

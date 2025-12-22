@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client"
 
 import { useState, useRef, useEffect } from "react"
@@ -77,8 +76,7 @@ function ChronologieElement({
   dashboard: boolean 
 }) {
   const [elementState, setElementState] = useState<DashboardElementState>("view")
-
-  const textRef = useRef<HTMLLinkElement>(null)
+  const textRef = useRef<HTMLAnchorElement>(null)
 
   const isDashboardLink = `${dashboard ? "/dashboard" : ""}/mouvements/${element.name.toLowerCase()}`
   const toggleView = (view: DashboardElementState) => setElementState(view);
@@ -87,7 +85,7 @@ function ChronologieElement({
     if ( !textRef || !textRef.current ) return
 
     function handleTransitionEnd(event: TransitionEvent) {
-      const el = event.target as HTMLLinkElement;
+      const el = event.target as HTMLAnchorElement;
       el.style.setProperty("display", "none");
     }
 
@@ -101,8 +99,10 @@ function ChronologieElement({
   useEffect(() => {
     if ( elementState === "view" && textRef && textRef.current ) {
       const timeout = setTimeout(() => {
+        if ( !textRef || !textRef.current ) return
+          
         textRef.current.style.display = "flex";
-        textRef.current.style.opacity = 1;
+        textRef.current.style.opacity = "1";
       }, 490)
     }
   }, [elementState, textRef])
@@ -129,7 +129,12 @@ function ChronologieElement({
         </div>
       </Link>
 
-      <UpdateChronologie element={element} is_first={index === 0} toggleView={toggleView} enable={elementState === "edit"}/>
+      <UpdateChronologie 
+        element={element} 
+        is_first={index === 0} 
+        toggleView={toggleView} 
+        enable={elementState === "edit"}
+      />
 
 
       {

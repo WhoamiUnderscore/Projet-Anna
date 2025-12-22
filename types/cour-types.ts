@@ -7,8 +7,10 @@ export type F_Cour = {
 }
 
 export type F_NewCour = {
+  _id?: string,
   title: string,
-  image: File,
+  image: File | string,
+  image_preview?: string,
   subject: string,
   content: string
 }

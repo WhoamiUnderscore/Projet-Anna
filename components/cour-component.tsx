@@ -1,13 +1,15 @@
-// @ts-nocheck
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import useFetch from "@/hook/useFetch"
+import DashboardTools from "@/components/dashboard-tools"
 
 import { type F_Cour, type F_NewCour } from "@/types/cour-types"
+import { type DashboardElementState } from "@/types/dashboard-types"
 
 export function CourComponent({ cour }: { cour: F_Cour }) {
   return (
@@ -27,60 +29,45 @@ export function CourComponent({ cour }: { cour: F_Cour }) {
 
 
 export function CourDashboardComponent({ cour }: { cour: F_Cour }) {
-  const [deleteElement, setDeleteElement] = useState(false)
-  const [updateElement, setUpdateElement] = useState(false)
+  const [elementState, setElementState] = useState<DashboardElementState>("view")
 
-  const { deleteData } = useFetch();
-
-  if ( updateElement ) {
-    return <CourForm default_value={cour} />
-  }
+  const toggleView = (view: DashboardElementState) => setElementState(view);
 
   return <section className="cour-container">
-    <a href={`/dashboard/autres/${cour._id}`} className="image-container" style={{ pointerEvents: "all"}}>
+    <Link 
+      href={`/dashboard/autres/${cour._id}`} 
+      className="image-container" 
+      style={{ pointerEvents: "all"}}
+    >
       <img className="cour-image" src={cour.image} />
-    </a>
+    </Link>
+
+    <Link
+      href={`/dashboard/autres/${cour._id}`} 
+      className="cour-information-container"
+    >
+      <h3>{cour.title}</h3>
+      <p>{cour.subject}</p>
+    </Link>
+
+    <CourForm 
+      enable={elementState === "edit"}
+      toggleView={toggleView}
+      default_value={{
+        ...cour,
+        image_preview: cour.image
+      } as F_NewCour} 
+    />
 
     {
-      // if deleteElement, remove information to minimize the number of informations
-      !deleteElement && (
-        <section className="cour-information-container">
-          <h3>{cour.title}</h3>
-          <p>{cour.subject}</p>
-        </section>
-      )
+      elementState !== "edit" && 
+        <DashboardTools 
+          toggleView={toggleView} 
+          state={elementState} 
+          element={cour} 
+        />
     }
-
-    {
-      // Delete and Edit button
-      !deleteElement && <section className="chronologie-dashboard">
-        <span style={{color: ""}} onClick={() => setUpdateElement(true)}><FontAwesomeIcon icon={faPenToSquare} /></span>        
-        <span style={{color: "#d90429"}} onClick={() => setDeleteElement(true)}><FontAwesomeIcon icon={faTrash} /></span>        
-      </section>
-    }
-
-    {
-        // Remove all information and display a "popup" delete prevention to prevent miss-click
-        deleteElement && <section className="pop-up-delete-article">
-        <p>Est tu sur de vouloir supprimer le mouvement <strong>{cour.title}</strong> ?</p>
-
-        <div className="pop-up-button-container">
-          <button 
-            className="delete-button" 
-            onClick={() => deleteData(`/cours?id=${cour._id}`)}
-          >
-            Supprimer
-          </button>
-          <button 
-            className="return-button" 
-            onClick={() => setDeleteElement(false)}
-          >
-          Annuler
-          </button>
-        </div>
-      </section>
-    }
-  </section>
+    </section>
 }
 
 
@@ -88,6 +75,8 @@ export function CourDashboardComponent({ cour }: { cour: F_Cour }) {
 
 
 export function CourForm({ 
+  enable = true,
+  toggleView,
   default_value = {
     title: "",
     subject: "",
@@ -95,19 +84,14 @@ export function CourForm({
     image_preview: "",
     content: ""
   }
-}: { default_value: F_NewCour }) {
+}: { 
+  enable?: boolean,
+  toggleView?: (view: DashboardElementState) => void,
+  default_value?: F_NewCour 
+}) {
   const [courForm, setCourForm] = useState<F_NewCour>(default_value)
 
   const { loading, postDatas, updateData } = useFetch()
-
-  useEffect(() => {
-    if ( courForm._id ) {
-      setCourForm((prev) => ({
-        ...prev,
-        image_preview: prev.image
-      }))
-    }
-  }, [])
   
   function isCourFilled() {
     const { title, subject, image, content } = courForm;
@@ -127,23 +111,30 @@ export function CourForm({
 
     if ( courForm._id ) {
       valid_data._id = courForm._id
-      console.log(valid_data)
-      updateData<F_Cour>(valid_data, "/cours")
+
+      updateData<F_NewCour>(valid_data, "/cours")
     } else {
       postDatas<F_NewCour>(valid_data, "/cours")
     }
   }
 
   return (
-    <article className="cour-container">
+    <article 
+      className="cour-container"
+      style={
+          !toggleView ? // Is not an editable article 
+            { } :
+            enable ?
+              { position: "absolute", display: "flex" } :
+              { display: "none" } 
+      }
+    >
       <div className="image-container">
-        <img 
-          className="cour-image" 
-          src={courForm.image_preview ? courForm.image_preview : null} 
-        />
         <input 
           type="file" 
-          onChange={(e) => setCourForm((prev) => {
+          onChange={(e) => setCourForm((prev: F_NewCour) => {
+            if ( !e.target.files ) return prev
+
             const file = e.target.files[0]
             const imageURL = URL.createObjectURL(file)
 
@@ -157,7 +148,12 @@ export function CourForm({
 
         {
           // If there is no image choose, display a little +
-          !courForm.image_preview && <div className="input-style" />
+          !courForm.image_preview ?
+            <div className="input-style" /> :
+            <img 
+              className="cour-image" 
+              src={courForm.image_preview} 
+            />
         }
       </div>
 
@@ -166,29 +162,37 @@ export function CourForm({
           className="title-input" 
           value={courForm.title} 
           placeholder={"Titre"} 
-          onChange={(e) => setCourForm((prev) => ({ ...prev, title: e.target.value}))}
+          onChange={(e) => setCourForm((prev: F_NewCour) => ({ ...prev, title: e.target.value}))}
         />
 
-        <div> 
           <input 
             className="subject-value" 
             placeholder="Sujet" 
             value={courForm.subject} 
-            onChange={(e) => setCourForm((prev) => ({...prev, subject: e.target.value}))} 
+            onChange={(e) => setCourForm((prev: F_NewCour) => ({...prev, subject: e.target.value}))} 
           /> 
-        </div>
       </section>
 
+      <div className="buttons-container">
       {
         isCourFilled() && (
           <button 
-            className="new-cour-button" 
+            className="new-article-button" 
             onClick={handleSave}
           >
             Enregistrer
           </button>
         )
       }
+      {
+        toggleView && <button 
+            className="close-edit-view" 
+            onClick={() => toggleView("view")}
+            >
+              Retour
+            </button>
+      }
+      </div>
     </article>
   )
 }

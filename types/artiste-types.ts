@@ -9,8 +9,10 @@ export type F_Artiste = {
 }
 
 export type F_NewArtiste = {
+  _id?: string,
   name: string,
-  image: File,
+  image: File | string,
+  image_preview?: string,
   metier: string,
   from: number,
   to: number,
@@ -27,6 +29,7 @@ export type B_Artiste = {
 }
 
 export type B_NewArtiste = {
+  _id?: string,
   name: string,
   image: string,
   metier: string,

@@ -181,8 +181,8 @@ export async function PATCH(req: Request) {
     update_article.image = article.image
   }
 
-  if ( updateArticle.title !== article.title ) {
-    let exist = await Article.exist(updateArticle.title)
+  if ( update_article.title !== article.title ) {
+    let exist = await Article.exist(update_article.title)
 
     if ( exist ) {
       return httpResponse( 

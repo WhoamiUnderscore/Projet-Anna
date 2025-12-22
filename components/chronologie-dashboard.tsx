@@ -1,11 +1,11 @@
-// @ts-nocheck
 "use client"
 
 import { useState, useEffect, useRef } from "react"
 
 import useFetch from "@/hook/useFetch";
 
-import { type F_Chronologie, type B_NewChronologie } from "@/types/chronologie-types"
+import { type DashboardElementState } from "@/types/dashboard-types"
+import { type F_ChronologieElement, type B_NewChronologie } from "@/types/chronologie-types"
 
 export function NewChronologie({currentState, elementsLength } : { currentState: number, elementsLength: number}) {
   const [newElement, setNewElement] = useState<B_NewChronologie>({
@@ -36,7 +36,7 @@ export function NewChronologie({currentState, elementsLength } : { currentState:
           placeholder="Nouvelle element" 
           value={newElement.name} 
           onChange={(e) => {
-            setNewElement((prev) => ({
+            setNewElement((prev: B_NewChronologie) => ({
               ...prev,
               name: e.target.value
             }))
@@ -56,7 +56,7 @@ export function NewChronologie({currentState, elementsLength } : { currentState:
               // Remove letters or symbols
               const onlyNumbers = e.target.value.replace(/\D/g, "");
 
-              setNewElement((prev) => ({
+              setNewElement((prev: B_NewChronologie) => ({
                 ...prev,
                 from: Number(onlyNumbers)
               }))
@@ -76,7 +76,7 @@ export function NewChronologie({currentState, elementsLength } : { currentState:
               // Remove letters or symbols
               const onlyNumbers = e.target.value.replace(/\D/g, "");
 
-              setNewElement((prev) => ({
+              setNewElement((prev: B_NewChronologie) => ({
                 ...prev,
                 to: Number(onlyNumbers)
               }))
@@ -100,7 +100,17 @@ export function NewChronologie({currentState, elementsLength } : { currentState:
 
 
 
-export function UpdateChronologie({ element, is_first, toggleView, enable }: { element: F_Chronologie, is_first: boolean, toggleView: (view: string) => void, enable: boolean }) {
+export function UpdateChronologie({ 
+  element, 
+  is_first, 
+  toggleView, 
+  enable 
+}: { 
+  element: F_ChronologieElement, 
+  is_first: boolean, 
+  toggleView: (view: DashboardElementState) => void, 
+  enable: boolean 
+}) {
   const [updatedElement, setUpdatedElement] = useState(element);
   const [changingView, setChangingView] = useState<boolean>(false)
 
@@ -109,15 +119,21 @@ export function UpdateChronologie({ element, is_first, toggleView, enable }: { e
 
 
   useEffect(() => {
+    if ( !containerRef || !containerRef.current ) return
+
     if ( enable ) {
       containerRef.current.style.setProperty("display", "flex");
       setTimeout(() => {
+        if ( !containerRef || !containerRef.current ) return
+
         containerRef.current.style.setProperty("opacity", "1");
       }, 500)
     } else {
       setChangingView(false)
       containerRef.current.style.setProperty("opacity", "0");
       setTimeout(() => {
+        if ( !containerRef || !containerRef.current ) return
+
         containerRef.current.style.setProperty("display", "none");
       }, 500)
     };
@@ -150,7 +166,7 @@ export function UpdateChronologie({ element, is_first, toggleView, enable }: { e
           placeholder="Nouvelle element" 
           value={updatedElement.name} 
           onChange={(e) => {
-            setUpdatedElement((prev) => ({
+            setUpdatedElement((prev: F_ChronologieElement) => ({
               ...prev,
               name: e.target.value
             }))
@@ -170,7 +186,7 @@ export function UpdateChronologie({ element, is_first, toggleView, enable }: { e
               // Remove letters or symbols
               const onlyNumbers = e.target.value.replace(/\D/g, "");
 
-              setUpdatedElement((prev) => ({
+              setUpdatedElement((prev: F_ChronologieElement) => ({
                 ...prev,
                 from: Number(onlyNumbers)
               }))
@@ -190,7 +206,7 @@ export function UpdateChronologie({ element, is_first, toggleView, enable }: { e
               // Remove letters and symbols
               const onlyNumbers = e.target.value.replace(/\D/g, "");
 
-              setUpdatedElement((prev) => ({
+              setUpdatedElement((prev: F_ChronologieElement) => ({
                 ...prev,
                 to: Number(onlyNumbers)
               }))

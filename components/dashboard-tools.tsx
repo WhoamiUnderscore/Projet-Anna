@@ -12,13 +12,15 @@ import { type F_Article } from "@/types/article-types"
 import { type F_Artiste } from "@/types/artiste-types"
 import { type F_Cour } from "@/types/cour-types"
 
+type ElementTypes = F_ChronologieElement | F_Cour | F_Artiste | F_Article
+
 type Props = {
-  element: F_ChronologieElement | F_Cour | F_Artiste | F_Article,
+  element: ElementTypes
   state: DashboardElementState,
   toggleView: (view: DashboardElementState) => void,
 }
 
-const DashboardTools = forwardRef<HTMLLinkElement, Props>(
+const DashboardTools = forwardRef<HTMLAnchorElement, Props>(
   ({ element, state, toggleView }, ref) => { 
   const [isDeleting, setIsDeleting] = useState<boolean>(state === "delete")
 
@@ -48,15 +50,18 @@ const DashboardTools = forwardRef<HTMLLinkElement, Props>(
   const handleUpdateClick = () => {
     if ( ref && typeof ref !== "function" && ref.current ) {
       ref.current.style.opacity = "0";
-    }
 
-    if ( buttonsRef && buttonsRef.current ) {
-      buttonsRef.current.style.opacity = "0";
-    }
 
-    const time = setTimeout(() => {
+      if ( buttonsRef && buttonsRef.current ) {
+        buttonsRef.current.style.opacity = "0";
+      }
+
+      const time = setTimeout(() => {
+        toggleView("edit")
+      }, 800);
+    } else { // Don't launch animations if there is no ref
       toggleView("edit")
-    }, 800);
+    }
   }
 
   return (

@@ -1,13 +1,15 @@
-// @ts-nocheck
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons"
 
 import useFetch from "@/hook/useFetch"
+import DashboardTools from "@/components/dashboard-tools"
 
 import { type F_Artiste, type F_NewArtiste } from "@/types/artiste-types"
+import { type DashboardElementState } from "@/types/dashboard-types"
 
 export function ArtisteComponent({ artiste }: { artiste: F_Artiste }) {
   return (
@@ -27,58 +29,40 @@ export function ArtisteComponent({ artiste }: { artiste: F_Artiste }) {
 
 
 export function ArtisteDashboardComponent({ artiste }: { artiste: F_Artiste }) {
-  const [deleteElement, setDeleteElement] = useState(false)
-  const [updateElement, setUpdateElement] = useState(false)
+  const [elementState, setElementState] = useState<DashboardElementState>("view")
 
-  const { deleteData } = useFetch();
-
-  if ( updateElement ) {
-    return <ArtisteForm default_value={artiste} />
-  }
+  const toggleView = (view: DashboardElementState) => setElementState(view);
 
   return <section className="artiste-container">
-    <a href={`/dashboard/artistes/${artiste._id}`} className="image-container" style={{ pointerEvents: "all"}}>
+    <Link 
+      href={`/dashboard/artistes/${artiste._id}`} 
+      className="image-container" 
+      style={ elementState === "edit" ? { display: "none" } : { pointerEvents: "all"}}
+    >
       <img className="artiste-image" src={artiste.image} />
-    </a>
+    </Link>
+
+    <Link href={`/dashboard/artistes/${artiste._id}`} className="cour-information-container">
+      <h3>{artiste.name}</h3>
+      <p>{artiste.metier} | {artiste.from} - {artiste.to}</p>
+    </Link>
+
+    <ArtisteForm 
+      default_value={{
+        ...artiste,
+        image_preview: artiste.image,
+      } as F_NewArtiste} 
+      toggleView={toggleView}
+      enable={elementState === "edit"}
+    />
 
     {
-      // if deleteElement, remove information to minimize the number of informations
-      !deleteElement && (
-        <section className="cour-information-container">
-          <h3>{artiste.name}</h3>
-          <p>{artiste.metier} | {artiste.from} - {artiste.to}</p>
-        </section>
-      )
-    }
-
-    {
-      // Delete and Edit button
-      !deleteElement && <section className="chronologie-dashboard">
-        <span style={{color: ""}} onClick={() => setUpdateElement(true)}><FontAwesomeIcon icon={faPenToSquare} /></span>        
-        <span style={{color: "#d90429"}} onClick={() => setDeleteElement(true)}><FontAwesomeIcon icon={faTrash} /></span>        
-      </section>
-    }
-
-    {
-        // Remove all information and display a "popup" delete prevention to prevent miss-click
-        deleteElement && <section className="pop-up-delete-article">
-        <p>Est tu sur de vouloir supprimer <strong>{artiste.name}</strong> ?</p>
-
-        <div className="pop-up-button-container">
-          <button 
-            className="delete-button" 
-            onClick={() => deleteData(`/artistes?id=${artiste._id}`)}
-          >
-            Supprimer
-          </button>
-          <button 
-            className="return-button" 
-            onClick={() => setDeleteElement(false)}
-          >
-          Annuler
-          </button>
-        </div>
-      </section>
+      elementState !== "edit" && 
+        <DashboardTools 
+          toggleView={toggleView} 
+          state={elementState} 
+          element={artiste} 
+        />
     }
   </section>
 }
@@ -88,6 +72,8 @@ export function ArtisteDashboardComponent({ artiste }: { artiste: F_Artiste }) {
 
 
 export function ArtisteForm({ 
+  enable = true,
+  toggleView,
   default_value = {
     name: "",
     metier: "",
@@ -97,19 +83,14 @@ export function ArtisteForm({
     to:0,
     content: ""
   }
-}: { default_value: F_NewArtiste }) {
+}: { 
+  enable?: boolean,
+  toggleView?: (view: DashboardElementState) => void,
+  default_value?: F_NewArtiste 
+}) {
   const [artisteForm, setArtisteForm] = useState<F_NewArtiste>(default_value)
 
   const { postDatas, updateData } = useFetch()
-
-  useEffect(() => {
-    if ( artisteForm._id ) {
-      setArtisteForm((prev) => ({
-        ...prev,
-        image_preview: prev.image
-      }))
-    }
-  }, [])
 
   function isArtisteFilled() {
     const { name, from, to, metier, image, content } = artisteForm;
@@ -129,24 +110,32 @@ export function ArtisteForm({
       content
     };
 
-    if ( artisteForm._id ) {
+    if ( artisteForm._id !== undefined ) {
       valid_data._id = artisteForm._id
-      updateData<F_Artiste>(valid_data, "/artistes")
+
+      updateData<F_NewArtiste>(valid_data, "/artistes")
     } else {
       postDatas<F_NewArtiste>(valid_data, "/artistes")
     }
   }
 
   return (
-    <article className="artiste-container">
+    <article 
+      className="artiste-container"
+      style={
+          !toggleView ? // Is not an editable article 
+            { } :
+            enable ?
+              { position: "absolute", display: "flex" } :
+              { display: "none" } 
+      }
+    >
       <div className="image-container">
-        <img 
-          className="artiste-image" 
-          src={artisteForm.image_preview ? artisteForm.image_preview : null} 
-        />
         <input 
           type="file" 
-          onChange={(e) => setArtisteForm((prev) => {
+          onChange={(e) => setArtisteForm((prev: F_NewArtiste) => {
+            if ( !e.target.files ) return prev
+
             const file = e.target.files[0]
             const imageURL = URL.createObjectURL(file)
 
@@ -160,7 +149,12 @@ export function ArtisteForm({
 
         {
           // If there is no image choose, display a little +
-          !artisteForm.image_preview && <div className="input-style" />
+          !artisteForm.image_preview ?
+            <div className="input-style" /> :
+            <img 
+              className="artiste-image" 
+              src={artisteForm.image_preview} 
+            />
         }
       </div>
 
@@ -206,6 +200,7 @@ export function ArtisteForm({
         </div>
       </section>
 
+      <div className="buttons-container">
       {
         isArtisteFilled() && (
           <button 
@@ -216,6 +211,15 @@ export function ArtisteForm({
           </button>
         )
       }
+      {
+        toggleView && <button 
+            className="close-edit-view" 
+            onClick={() => toggleView("view")}
+            >
+              Retour
+            </button>
+      }
+      </div>
     </article>
   )
 }
