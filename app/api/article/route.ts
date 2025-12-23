@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Article from "@/class/article-class";
 import Image from "@/class/image-class"
 import Github from "@/class/github-class";
@@ -10,7 +9,7 @@ import toBase64 from "@/utils/to-base64"
 import isAnImage from "@/utils/is-image"
 
 import { StatusCode } from "@/types/http-response-types"
-import { type B_Article, type B_NewArticle } from "@/types/article-types";
+import { type B_Article, type B_NewArticle, type F_Article } from "@/types/article-types";
 import { type FileType } from "@/types/file-types"
 
 export async function GET(req: Request) {
@@ -153,7 +152,7 @@ export async function PATCH(req: Request) {
     const image_exist = await Image.exist(update_article.image);
 
     if ( !image_exist) {
-      const new_image = await Image.new({ path: update_article.image, id_used: [article.id.toString()] })
+      const new_image = await Image.new({ path: update_article.image, id_used: [article._id.toString()] })
 
       if ( new_image !== StatusCode.Success ) {
         return httpResponse(
@@ -193,7 +192,7 @@ export async function PATCH(req: Request) {
     }
   }
   
-  const updating_article = await Article.update(update_article);
+  const updating_article = await Article.update(update_article as F_Article);
 
   return httpResponse(updating_article.status, undefined, updating_article.message);
 }

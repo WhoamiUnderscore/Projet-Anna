@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 
 import useFetch from "@/hook/useFetch"
 import { ArtisteComponent } from "@/components/artiste-component"
@@ -17,7 +18,7 @@ export default function ArtistesPage() {
   useEffect(() => {
     if ( loading ) return  
     
-    if ( fetchResult.status == 200 && fetchResult.data.length > 0) {
+    if ( fetchResult.status == 200 && fetchResult.data !== null) {
       setCurrentArtistes(fetchResult.data);
     }
   }, [loading, fetchResult])
@@ -26,13 +27,13 @@ export default function ArtistesPage() {
     <main className="artistes-page">
       <Loading loading={loading} />
 
-      <a href="/" className="return">Retour</a>
+      <Link href="/" className="return">Retour</Link>
 
     {
       currentArtistes !== null && (
         <Filter 
           elements={currentArtistes}
-          backup_elements={fetchResult.data}
+          backup_elements={fetchResult.data ? fetchResult.data : []}
           filterProps={{ value: "metier", text: "Choisissez un metier..." }}
           searchProps={{ value: "name", text: "Nom de l'artiste..."}}
           setElement={setCurrentArtistes}

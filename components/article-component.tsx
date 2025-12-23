@@ -12,14 +12,14 @@ import { type F_Article, type F_NewArticle, B_NewArticle } from "@/types/article
 import { type DashboardElementState } from "@/types/dashboard-types"
 
 export function ArticleComponent({ article }: { article: F_Article } ) {
-  return <a href={`/articles/${article._id}`} className="article-container">
+  return <Link href={`/articles/${article._id}`} className="article-container">
     <div className="image-container">
       <img className="article-image" src={article.image} /> </div>
     <section className="article-information-container">
       <h3>{article.title}</h3>
       <p>{article.artiste} - {article.date}</p>
     </section>
-  </a>
+  </Link>
 }
 
 

@@ -1,9 +1,8 @@
-// @ts-nocheck
 import mongoose from "mongoose";
 
 import article_schema from "@/models/article-model"
 
-import { type F_Article, type B_NewArticle } from "@types/article-types"
+import { type F_Article, type B_NewArticle } from "@/types/article-types"
 import { StatusCode } from "@/types/http-response-types"
 
 export default class Article {

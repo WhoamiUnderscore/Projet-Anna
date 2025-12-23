@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Github from "@/class/github-class";
 import Image from "@/class/image-class"
 import Cour from "@/class/cour-class"
@@ -9,7 +8,7 @@ import formToObject from "@/utils/form-to-object";
 import toBase64 from "@/utils/to-base64"
 import isAnImage from "@/utils/is-image"
 
-import { type F_NewCour, type B_Cour } from "@/types/cour-types"
+import { type F_NewCour, type F_Cour, type B_Cour } from "@/types/cour-types"
 import { StatusCode } from "@/types/http-response-types"
 import { type FileType } from "@/types/file-types"
 
@@ -143,10 +142,10 @@ export async function PATCH(req: Request) {
     const image_exist = await Image.exist(update_cour.image);
 
     if ( !image_exist) {
-      const new_image = await Image.new({ path: update_cour.image, id_used: [cour.id.toString()] })
+      const new_image = await Image.new({ path: update_cour.image, id_used: [cour._id.toString()] })
 
-      if ( new_image !== statuscode.success ) {
-        return httpresponse(
+      if ( new_image !== StatusCode.Success ) {
+        return httpResponse(
           new_image, 
           undefined, 
           "Il y a eu une erreur lors de l'enregistrement de votre image, veuillez réessayer."
@@ -183,7 +182,7 @@ export async function PATCH(req: Request) {
     }
   }
   
-  const updating_cour = await Cour.update(update_cour);
+  const updating_cour = await Cour.update(update_cour as F_Cour);
   return httpResponse(updating_cour.status, undefined, updating_cour.message);
 }
 

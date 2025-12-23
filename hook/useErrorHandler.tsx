@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client"
 
 import * as React from "react"
@@ -6,11 +5,11 @@ import * as React from "react"
 import { type DataFetch } from "@/types/fetch-types"
 
 export const ErrorHandlerContext = React.createContext({
-  errors: [],
-  addError: (error: DataFetch<any>) => {}
+  errors: [] as DataFetch<any>[],
+  addError: (error: DataFetch<any>) => {},
 });
 
-export function ErrorHandlerProvider({children}) {
+export function ErrorHandlerProvider({children}: Readonly<{children: React.ReactNode}>) {
   const [errors, setErrors] = React.useState<DataFetch<any>[]>([]);
 
   function addError( error: DataFetch<any> ) {

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Github from "@/class/github-class";
 import Image from "@/class/image-class"
 import Artiste from "@/class/artiste-class"
@@ -9,7 +8,7 @@ import formToObject from "@/utils/form-to-object";
 import toBase64 from "@/utils/to-base64"
 import isAnImage from "@/utils/is-image"
 
-import { type F_NewArtiste, type B_Artiste } from "@/types/artiste-types"
+import { type F_NewArtiste, type B_Artiste, type F_Artiste } from "@/types/artiste-types"
 import { StatusCode } from "@/types/http-response-types"
 import { type FileType } from "@/types/file-types"
 
@@ -143,7 +142,7 @@ export async function PATCH(req: Request) {
     const image_exist = await Image.exist(update_artiste.image);
 
     if ( !image_exist) {
-      const new_image = await Image.new({ path: update_artiste.image, id_used: [artiste.id.toString()] })
+      const new_image = await Image.new({ path: update_artiste.image, id_used: [artiste._id.toString()] })
 
       if ( new_image !== StatusCode.Success ) {
         return httpResponse(
@@ -183,7 +182,7 @@ export async function PATCH(req: Request) {
     }
   }
   
-  const updating_artiste = await Artiste.update(update_artiste);
+  const updating_artiste = await Artiste.update(update_artiste as F_Artiste);
   return httpResponse(updating_artiste.status, undefined, updating_artiste.message);
 }
 

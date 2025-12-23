@@ -1,4 +1,3 @@
-// @ts-nocheck
 import mongoose from "mongoose"
 
 import Artiste from "@/class/artiste-class";
@@ -71,7 +70,7 @@ export async function PATCH(req: Request) {
       const image_exist = await Image.exist(`/images/${img.name}`)
 
       if ( !image_exist ) {
-        const new_image = await Image.new({ path: `/images/${img.name}`, id_used: [artiste.id.toString()] });
+        const new_image = await Image.new({ path: `/images/${img.name}`, id_used: [artiste._id.toString()] });
 
         if ( new_image !== StatusCode.Success ) {
           return httpResponse(

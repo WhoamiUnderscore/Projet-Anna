@@ -1,10 +1,10 @@
-// @ts-nocheck
 "use client"
 
 import { useEffect } from "react"
 import { v4 as uuidv4 } from 'uuid'
 import { marked } from "marked"
 import { useParams } from "next/navigation" 
+import Link from "next/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from "@fortawesome/free-solid-svg-icons"
 
@@ -53,7 +53,7 @@ export default function ArtistePage(){
     if ( !fetchResult || !fetchResult.data ) return 
 
     const savedContent = sessionStorage.getItem("content");
-    let content: BlockType[] = [];
+    let content: (BlockType | string)[] = [];
 
     if (savedContent) {
       content = JSON.parse(savedContent);
@@ -86,7 +86,7 @@ export default function ArtistePage(){
   }, [fetchResult])
     
   return <main className="artiste-page">
-      <a href='/dashboard/artistes'>Retour</a>
+      <Link href='/dashboard/artistes'>Retour</Link>
 
     <section className="input-file-container">
       <button className="ui-input-file">Ajouter une image</button>
@@ -98,7 +98,7 @@ export default function ArtistePage(){
       />
     </section>
 
-      <section className='renderer-section' ref={editor.container_ref} onClick={(e) => editor.handleContainerClick(e)}>
+      <section className='renderer-section' ref={editor.container_ref} onClick={editor.handleContainerClick}>
         {
           editor.blocks.map((value, i) => (
             <div
@@ -119,7 +119,11 @@ export default function ArtistePage(){
               ref={editor.update_textarea_ref} 
               value={editor.updateValue.value} 
               onChange={(e) => editor.handleUpdateChange(e)} 
-              onBlur={(e) => editor.reCreateBlockFromUpdate(editor.update_textarea_ref.current.value)} 
+              onBlur={(e) => {
+                if ( !editor.update_textarea_ref || !editor.update_textarea_ref.current ) return
+
+                editor.reCreateBlockFromUpdate(editor.update_textarea_ref.current.value)
+              }}
               onKeyDown={(e) => editor.handleKeyDown(e)}
             />
           )

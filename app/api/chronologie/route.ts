@@ -1,4 +1,3 @@
-// @ts-nocheck
 import Chronologie from "@/class/chronologie-class";
 
 import connection from "@/utils/connection";

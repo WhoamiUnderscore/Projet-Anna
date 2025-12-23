@@ -1,4 +1,3 @@
-// @ts-nocheck
 import artiste_model from "@/models/artiste-model"
 
 import { type F_Artiste, type B_NewArtiste } from "@/types/artiste-types"

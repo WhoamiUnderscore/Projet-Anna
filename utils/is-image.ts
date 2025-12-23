@@ -1,4 +1,3 @@
-// @ts-nocheck
 export default function isAnImage(image: File | string): boolean {
   if ( typeof image === "string" ) return true;
 

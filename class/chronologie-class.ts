@@ -1,4 +1,3 @@
-// @ts-nocheck
 import mongoose from "mongoose"
 
 import chronologie_schema from "@/models/chronologie-model";
@@ -62,7 +61,7 @@ export default class Chronologie {
   }
 
   // Update chronologie element
-  static async update(c: F_ChronologieElement): Promise<StatusCode> {
+  static async update(c: F_ChronologieElement): Promise<{status: StatusCode, message: string}> {
     const { _id, name, from, to } = c;
 
     // Verify if base chronologie element exist - also to get his articles
@@ -96,7 +95,7 @@ export default class Chronologie {
 
           const result = await Article.update(article);
 
-          if (result !== StatusCode.Success) {
+          if (result.status !== StatusCode.Success) {
             return {
               status: StatusCode.InternalError,
               message: "Une erreur est survenue lors de la modification du nom du mouvement dans ses articles assignés, veuillez réessayer."
@@ -131,7 +130,7 @@ export default class Chronologie {
     // Delete all articles relative to an chronologie
     all_articles_with_chronologie_name.forEach(async (el) => {
       const request = await Article.delete(el._id);
-      if ( request !== StatusCode.Success) {
+      if ( request.status !== StatusCode.Success) {
         return { 
           status: StatusCode.InternalError, 
           message: "Une erreur est survenue lors de la suppression des articles assignés au mouvement, veuillez réessayer"

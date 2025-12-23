@@ -1,4 +1,3 @@
-// @ts-nocheck
 import image_schema from "@/models/image-model"
 
 import { type B_Image, type B_NewImage } from "@/types/image-types"
@@ -52,7 +51,7 @@ export default class Image {
     const update_image = await Image.update(image);
 
     if ( image.id_used.length === 0 ) {
-      const delete_image = await image_schema.deleteOne({ _id: image.id })
+      const delete_image = await image_schema.deleteOne({ _id: image._id })
 
       if ( delete_image.deletedCount === 1 ) return true;
     }

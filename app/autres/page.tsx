@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 
 import useFetch from "@/hook/useFetch"
 import { CourComponent } from "@/components/cour-component"
@@ -17,7 +18,7 @@ export default function CoursPage() {
   useEffect(() => {
     if ( loading ) return  
     
-    if ( fetchResult.status == 200 && fetchResult.data.length > 0) {
+    if ( fetchResult.status == 200 && fetchResult.data !== null ) {
       setCurrentCours(fetchResult.data);
     }
   }, [loading, fetchResult])
@@ -26,13 +27,13 @@ export default function CoursPage() {
     <main className="cours-page">
       <Loading loading={loading}/>
 
-      <a href="/" className="return">Retour</a>
+      <Link href="/" className="return">Retour</Link>
 
     {
       currentCours !== null && (
         <Filter 
           elements={currentCours}
-          backup_elements={fetchResult.data}
+          backup_elements={fetchResult.data ? fetchResult.data : []}
           filterProps={{ value: "subject", text: "Choisissez un sujet..." }}
           searchProps={{ value: "title", text: "Nom du cour..."}}
           setElement={setCurrentCours}

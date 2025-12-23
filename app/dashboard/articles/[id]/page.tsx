@@ -1,10 +1,10 @@
-// @ts-nocheck
 "use client"
 
 import { useEffect } from "react"
 import { v4 as uuidv4 } from 'uuid'
 import { marked } from "marked"
 import { useParams } from "next/navigation" 
+import Link from "next/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from "@fortawesome/free-solid-svg-icons"
 
@@ -54,7 +54,7 @@ export default function ArticlePage(){
     if ( !fetchResult || !fetchResult.data ) return 
 
     const savedContent = sessionStorage.getItem("content");
-    let content: BlockType[] = [];
+    let content: (BlockType | string)[] = [];
 
     if (savedContent) {
       content = JSON.parse(savedContent);
@@ -87,13 +87,11 @@ export default function ArticlePage(){
     })
   }, [fetchResult])
 
-  if ( loading ) {
-    return <Loading />
-  }
-    
   return <main className={"article-page"}>
+    <Loading loading={loading} />
+
     {
-      fetchResult && fetchResult.data && <a href={`/dashboard/mouvements/${fetchResult.data.mouvement.toLowerCase()}`}>Retour</a>
+      fetchResult && fetchResult.data && <Link href={`/dashboard/mouvements/${fetchResult.data.mouvement.toLowerCase()}`}>Retour</Link>
     }
 
     <section className="input-file-container">
@@ -106,7 +104,7 @@ export default function ArticlePage(){
       />
     </section>
 
-      <section className={`renderer-section`} ref={editor.container_ref} onClick={(e) => editor.handleContainerClick(e)}>
+      <section className={`renderer-section`} ref={editor.container_ref} onClick={editor.handleContainerClick}>
         {
           editor.blocks.map((value, i) => (
             <div
@@ -127,7 +125,11 @@ export default function ArticlePage(){
               ref={editor.update_textarea_ref} 
               value={editor.updateValue.value} 
               onChange={(e) => editor.handleUpdateChange(e)} 
-              onBlur={(e) => editor.reCreateBlockFromUpdate(editor.update_textarea_ref.current.value)} 
+              onBlur={(e) => {
+                if ( !editor.update_textarea_ref || !editor.update_textarea_ref.current) return
+
+                editor.reCreateBlockFromUpdate(editor.update_textarea_ref.current.value)
+              }} 
               onKeyDown={(e) => editor.handleKeyDown(e)}
             />
           )

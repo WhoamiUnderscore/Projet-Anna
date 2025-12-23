@@ -1,14 +1,14 @@
-// @ts-nocheck
 "use client"
 
 import { useState, useEffect } from "react"
 import { marked } from "marked"
 import { useParams } from "next/navigation" 
+import Link from "next/link"
 
 import useFetch from "@/hook/useFetch"
 import Loading from "@/components/loading"
 
-import { type F_Cour } from "@/hook/cour-types"
+import { type F_Cour } from "@/types/cour-types"
 
 export default function CourPage() {
   const [renderElements, setRenderElements] = useState<string[]>([]);
@@ -38,12 +38,10 @@ export default function CourPage() {
     return <p>Impossible de trouver l'article demander</p>
   }
 
-  if ( loading ) {
-    return <Loading />
-  }
-
   return <main className="cour-page">
-      <a href="/autres" className="return">Retour</a>
+    <Loading loading={loading} />
+
+    <Link href="/autres" className="return">Retour</Link>
 
     <div className="cour-informations-container">
       <h1 className="cour-title">{cour.title}</h1>

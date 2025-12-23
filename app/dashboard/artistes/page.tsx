@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
+import Link from "next/link"
 
 import useFetch from "@/hook/useFetch"
 import { ArtisteForm, ArtisteDashboardComponent } from "@/components/artiste-component"
@@ -27,7 +28,7 @@ export default function UpdateArtiste() {
   return <main className="artistes-page">
     <Loading loading={loading} />
 
-    <a href="/dashboard" className="return">Retour</a>
+    <Link href="/dashboard" className="return">Retour</Link>
 
     {
       currentArtistes !== null && (

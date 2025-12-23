@@ -11,13 +11,11 @@ import { type F_ChronologieElement } from "@/types/chronologie-types"
 
 export default function DashboardPage() {
   const [currentChronologieElement, setCurrentChronologieElement] = useState<F_ChronologieElement[]>([])
-  const { loading, fetchResult } = useFetch<F_ChronologieElement>("/chronologie");
+  const { loading, fetchResult } = useFetch<F_ChronologieElement[]>("/chronologie");
 
   useEffect(() => {
 
-    console.log(fetchResult.body)
-
-    if ( fetchResult.status === 200 ) {
+    if ( fetchResult.status === 200 && fetchResult.data ) {
       setCurrentChronologieElement(fetchResult.data);
     }
 

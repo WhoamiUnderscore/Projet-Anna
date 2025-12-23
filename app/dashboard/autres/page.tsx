@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
+import Link from "next/link"
 
 import useFetch from "@/hook/useFetch"
 import { CourForm, CourDashboardComponent } from "@/components/cour-component"
@@ -13,12 +14,12 @@ import { type F_Cour, type F_NewCour } from "@/types/cour-types"
 export default function UpdateCour() {
   const [currentCours, setCurrentCours] = useState<F_Cour[]>([])
 
-  const { loading, fetchResult } = useFetch<F_Cour>('/cours')
+  const { loading, fetchResult } = useFetch<F_Cour[]>('/cours')
 
   useEffect(() => {
     if ( loading ) return  
     
-    if ( fetchResult.status == 200 && fetchResult.data.length > 0) {
+    if ( fetchResult.status == 200 && fetchResult.data ) {
       setCurrentCours(fetchResult.data);
     }
   }, [loading, fetchResult])
@@ -26,13 +27,13 @@ export default function UpdateCour() {
   return <main className="cours-page">
     <Loading loading={loading} />
 
-    <a href="/dashboard" className="return">Retour</a>
+    <Link href="/dashboard" className="return">Retour</Link>
 
     {
       currentCours !== null && (
         <Filter 
           elements={currentCours}
-          backup_elements={fetchResult.data}
+          backup_elements={fetchResult.data ? fetchResult.data : []}
           filterProps={{ value: "subject", text: "Choisissez un sujet..." }}
           searchProps={{ value: "title", text: "Nom du cour..."}}
           setElement={setCurrentCours}

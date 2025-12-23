@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, ChangeEvent, type MouseEvent as ReactMouseEvent } from "react"
 import { marked } from "marked"
 import { v4 as uuidv4 } from 'uuid'
 
@@ -27,8 +26,8 @@ export default function useEditor(props: Props) {
   const [lastUpdateId, setLastUpdateId] = useState<string>("");
   const [allFiles, setAllFiles] = useState<{id: string, file: File}[]>([])
 
-  const container_ref = useRef<HTMLSectionElement>(null);
-  const file_input_ref = useRef<HTMLTextAreaElement>(null);
+  const container_ref = useRef<HTMLElement>(null);
+  const file_input_ref = useRef<HTMLInputElement>(null);
   const update_textarea_ref = useRef<HTMLTextAreaElement>(null)
 
   // useEffect(() => console.log(blocks), [blocks])
@@ -39,10 +38,17 @@ export default function useEditor(props: Props) {
     // This useEffect is used to positionnate the new update input in the right place
     // ======
 
-    if ( !container_ref || !updateValue || updateValue.updated || !update_textarea_ref ) return
+    if ( 
+        !container_ref || 
+        !container_ref.current || 
+        !update_textarea_ref || 
+        !update_textarea_ref.current ||
+        !updateValue || 
+        updateValue.updated 
+    ) return
 
     const domIndex = Array.from(container_ref.current.children)
-      .findIndex((el) => el.getAttribute("data-id") === updateValue.id);
+      .findIndex((el: Element) => el.getAttribute("data-id") === updateValue.id);
 
     container_ref.current.insertBefore(update_textarea_ref.current, container_ref.current.children[domIndex])
 
@@ -77,11 +83,14 @@ export default function useEditor(props: Props) {
 
   
 
-  function handleChange(event: Event) {
+  function handleChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    if ( !event.target ) return
+
     // Remove potential last update value
     if ( lastUpdateId !== "" ) {
-      setLastUpdateId(null)
+      setLastUpdateId("")
     }
+
 
     const input = event.target;
     input.style.height = `${input.scrollHeight}px`
@@ -95,19 +104,22 @@ export default function useEditor(props: Props) {
     }
 
     const value_without_break = value.slice(0, -1);
+    const token = marked.lexer(value_without_break)
     setBlocks((prev) => [
       ...prev,
       {
         id: uuidv4(),
         markdown: value_without_break, 
-        render: marked.parse(value_without_break),
+        render: marked.parser(token),
         visible: true
       }
     ]);
     setEditorValue("");
   } 
 
-  function handleUpdateChange(event: Event) {
+  function handleUpdateChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    if ( !updateValue ) return
+
     const input = event.target;
 
     input.style.height = `${input.scrollHeight}px`
@@ -116,10 +128,14 @@ export default function useEditor(props: Props) {
     const last_letter = value[value.length - 1]
 
     if ( last_letter !== "\n") {
-      setUpdateValue((prev) => ({
-        ...prev,
-        value,
-      }));
+      setUpdateValue((prev) => {
+        if ( !prev ) return prev
+
+        return {
+          ...prev,
+          value,
+        }
+      });
       return
     }
 
@@ -157,12 +173,16 @@ export default function useEditor(props: Props) {
 
   function reCreateBlockFromUpdate(value: string) {
     setBlocks(prev => {
+      if ( !updateValue ) return prev
+
+      const token = marked.lexer(value)
+
       return prev
       .map(b => b.id === updateValue.id ? {
         ...b,
         visible: true,
         markdown: value,
-        render: marked.parse(value)
+        render: marked.parser(token)
       } : b )
       .filter(b => b.markdown !== "")
     });
@@ -171,10 +191,10 @@ export default function useEditor(props: Props) {
   }
 
   function handleFile() {
-    if ( !file_input_ref ) return
+    if ( !file_input_ref || !file_input_ref.current || !file_input_ref.current.files ) return
 
     const file = file_input_ref.current.files[0];
-    let index_update;
+    let index_update: number | undefined = undefined;
     let id = uuidv4();
 
     if ( lastUpdateId ) {
@@ -215,7 +235,7 @@ export default function useEditor(props: Props) {
     file_input_ref.current.value = "";
   }
 
-  function createUpdateValue(value: BlockType, elementClick: HtmlElement) {
+  function createUpdateValue(value: BlockType, elementClick: EventTarget) {
     if ( !container_ref || elementClick instanceof HTMLImageElement ) return
 
     if ( updateValue ) {
@@ -236,7 +256,7 @@ export default function useEditor(props: Props) {
     const dom = document.createElement("div")
     dom.innerHTML = value.render;
 
-    const paragraph = dom.firstChild
+    const paragraph = dom.firstChild as HTMLParagraphElement
 
     if ( paragraph && paragraph.firstChild instanceof HTMLImageElement ) {
       paragraph.firstChild.classList.add("image-block");
@@ -261,10 +281,15 @@ export default function useEditor(props: Props) {
     }
   }
 
-  function handleContainerClick(e) {
-    const img = e.target.closest('.image-block');
+  function handleContainerClick(e: ReactMouseEvent<HTMLElement, MouseEvent>) {
+    if ( !e.target ) return;
+    const target = e.target;
 
-    if (!img) return;
+    if (!(target instanceof HTMLElement)) return;
+
+    const img = target.closest('.image-block');
+
+    if (!img || !(img instanceof HTMLElement )) return;
 
     const id = img.dataset.id;
 

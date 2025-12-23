@@ -1,4 +1,3 @@
-// @ts-nocheck
 import mongoose from "mongoose";
 
 import { B_HttpResponseData, StatusCode } from "@/types/http-response-types";

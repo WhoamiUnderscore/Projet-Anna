@@ -13,7 +13,7 @@ import { type DashboardElementState } from "@/types/dashboard-types"
 
 export function ArtisteComponent({ artiste }: { artiste: F_Artiste }) {
   return (
-    <a href={`/artistes/${artiste._id}`} className="artiste-container">
+    <Link href={`/artistes/${artiste._id}`} className="artiste-container">
       <div className="image-container">
         <img src={artiste.image} alt="image de cour non charger" />
       </div>
@@ -22,7 +22,7 @@ export function ArtisteComponent({ artiste }: { artiste: F_Artiste }) {
         <h3>{artiste.name}</h3>
         <p>{artiste.metier} | {artiste.from} - { artiste.to}</p>
       </section>
-    </a>
+    </Link>
   )
 }
 

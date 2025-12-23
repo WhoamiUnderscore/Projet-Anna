@@ -1,21 +1,21 @@
-// @ts-nocheck
 "use client"
 
 import { useState, useEffect } from "react"
-import { marked } from "marked"
+import Link from "next/link"
 import { useParams } from "next/navigation" 
+import { marked } from "marked"
 
 import useFetch from "@/hook/useFetch"
 import Loading from "@/components/loading"
 
-import { type F_Artiste } from "@/hook/artiste-types"
+import { type F_Artiste } from "@/types/artiste-types"
 
 export default function CourPage() {
   const [renderElements, setRenderElements] = useState<string[]>([]);
   const [artiste, setArtiste] = useState<F_Artiste | null>(null)
 
   const { id } = useParams<{ id: string }>()
-  const { loading, fetchResult } = useFetch<F_Cour>(`/artistes?id=${id}`);
+  const { loading, fetchResult } = useFetch<F_Artiste>(`/artistes?id=${id}`);
 
   useEffect(() => {
     if ( !fetchResult || !fetchResult.data ) return
@@ -38,12 +38,10 @@ export default function CourPage() {
     return <p>Impossible de trouver l'article demander</p>
   }
 
-  if ( loading ) {
-    return <Loading />
-  }
-
   return <main className="artiste-page">
-      <a href="/artistes" className="return">Retour</a>
+    <Loading loading={loading} />
+
+    <Link href="/artistes" className="return">Retour</Link>
 
     <div className="artiste-informations-container">
       <h1 className="artiste-title">{artiste.name}</h1>

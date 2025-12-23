@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { FileType } from "@/types/file_types"
+import { type FileType } from "@/types/file-types"
 
 export default class Github {
   private repoOwner = "WhoamiUnderscore"

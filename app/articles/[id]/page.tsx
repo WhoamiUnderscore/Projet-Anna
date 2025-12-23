@@ -1,9 +1,9 @@
-// @ts-nocheck
 "use client"
 
 import { useState, useEffect } from "react"
 import { marked } from "marked"
 import { useParams } from "next/navigation" 
+import Link from "next/link"
 
 import useFetch from "@/hook/useFetch"
 import Loading from "@/components/loading"
@@ -40,7 +40,8 @@ export default function ArticlePage(){
 
   return <main className="article-page">
     <Loading loading={loading} />
-      <a href={`/mouvements/${article.mouvement.toLowerCase()}`} className="return">Retour</a>
+    
+    <Link href={`/mouvements/${article.mouvement.toLowerCase()}`} className="return">Retour</Link>
 
     <div className="article-informations-container">
       <h1 className="article-title">{article.title}</h1>

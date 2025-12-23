@@ -8,7 +8,7 @@ import Loading from "@/components/loading"
 import { type F_ChronologieElement } from "@/types/chronologie-types"
 
 export default function Home() {
-  const { loading, fetchResult } = useFetch<F_ChronologieElement>("/chronologie");
+  const { loading, fetchResult } = useFetch<F_ChronologieElement[]>("/chronologie");
 
   return (
     <main className="chronologie-page">
@@ -17,7 +17,7 @@ export default function Home() {
       <Navbar dashboard={false} />
 
       {
-        fetchResult.status === 200 && fetchResult.data.length > 0 ?
+        fetchResult.status === 200 && fetchResult.data && fetchResult.data.length > 0 ?
           <Chronologie elements={fetchResult.data} dashboard={false}/>
           : 
           <section className="no-chronologie-container">

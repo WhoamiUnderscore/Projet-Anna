@@ -13,7 +13,7 @@ import { type DashboardElementState } from "@/types/dashboard-types"
 
 export function CourComponent({ cour }: { cour: F_Cour }) {
   return (
-    <a href={`/autres/${cour._id}`} className="cour-container">
+    <Link href={`/autres/${cour._id}`} className="cour-container">
       <div className="image-container">
         <img src={cour.image} alt="image de cour non charger" />
       </div>
@@ -22,7 +22,7 @@ export function CourComponent({ cour }: { cour: F_Cour }) {
         <h3>{cour.title}</h3>
         <p>{cour.subject}</p>
       </section>
-    </a>
+    </Link>
   )
 }
 

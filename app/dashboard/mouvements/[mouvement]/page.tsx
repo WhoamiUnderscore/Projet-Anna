@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useParams } from "next/navigation"
+import Link from "next/link"
 
 import useFetch from "@/hook/useFetch"
 import { ArticleDashboard, ArticleForm } from "@/components/article-component"
@@ -14,12 +15,12 @@ export default function UpdateArticles() {
   const [currentArticles, setCurrentArticles] = useState<F_Article[]>([])
 
   const params = useParams<{ mouvement: string }>()
-  const { loading, fetchResult } = useFetch<F_Article>(`/article?mouvement=${params.mouvement}`)
+  const { loading, fetchResult } = useFetch<F_Article[]>(`/article?mouvement=${params.mouvement}`)
 
   useEffect(() => {
     if ( loading ) return  
     
-    if ( fetchResult.status == 200 && fetchResult.data.length > 0) {
+    if ( fetchResult.status == 200 && fetchResult.data ) {
       setCurrentArticles(fetchResult.data);
     }
   }, [loading, fetchResult])
@@ -27,13 +28,13 @@ export default function UpdateArticles() {
   return <main className="articles-page">
     <Loading loading={loading} />
     
-    <a href="/dashboard" className="return">Retour</a>
+    <Link href="/dashboard" className="return">Retour</Link>
 
     {
       currentArticles !== null && (
         <Filter 
           elements={currentArticles}
-          backup_elements={fetchResult.data}
+          backup_elements={fetchResult.data ? fetchResult.data : []}
           filterProps={{ value: "artiste", text: "Choisissez un artiste..." }}
           searchProps={{ value: "title", text: "Nom de l'oeuvre..."}}
           setElement={setCurrentArticles}

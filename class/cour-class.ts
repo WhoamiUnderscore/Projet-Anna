@@ -1,6 +1,6 @@
 import cour_schema from "@/models/cours-model"
 
-import { type B_Cour, type F_Cour } from "@/types/cour-types"
+import { type F_Cour, type F_NewCour } from "@/types/cour-types"
 import { StatusCode } from "@/types/http-response-types"
 
 export default class Cour {
@@ -9,12 +9,12 @@ export default class Cour {
     return cour;
   }
 
-  static async get_all(id: string): Promise<F_Cour[]> {
+  static async get_all(): Promise<F_Cour[]> {
     const cours = await cour_schema.find({});
     return cours;
   }
 
-  static async new(c: B_Cour): Promise<{ status: StatusCode, _id: string, message: string }> {
+  static async new(c: F_NewCour): Promise<{ status: StatusCode, _id: string, message: string }> {
     const { title, image, subject, content } = c;
 
     const cour_already_exist = await Cour.exist(title);

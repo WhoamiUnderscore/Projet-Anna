@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client"
 
 import * as React from "react"
@@ -7,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { ErrorHandlerContext } from "@/hook/useErrorHandler"
 
 import { type B_NewChronologie } from "@/types/chronologie-types"
+import { type DataFetch } from "@/types/fetch-types"
 
 const website_url = "/api"
 
@@ -17,6 +17,7 @@ export default function useFetch<T>(url?: string){
   const [loading, setLoading] = React.useState(true);
 
   const [fetchResult, setFetchResult] = React.useState<DataFetch<T>>({
+    id: "",
     data: null,
     status: null,
     message: null
@@ -141,7 +142,7 @@ export default function useFetch<T>(url?: string){
       if (value instanceof File) {
         form_data.append(key, value)
       } else if ( typeof value === "string" || typeof value === "number") {
-        form_data.append(key, value)
+        form_data.append(key, String(value))
       }
     }
 

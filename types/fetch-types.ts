@@ -1,6 +1,6 @@
 export type DataFetch<T> = {
   id: string,
-  data: T,
-  message: string,
-  status: number
+  data: T | null,
+  message: string | null,
+  status: number | null
 }
