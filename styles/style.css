@@ -12,6 +12,7 @@
 html, input, button {
   font-size: 18px;
   font-family: "Outfit", sans-serif;
+  overflow-x: hidden;
 }
 
 input[type=number]::-webkit-inner-spin-button, 
@@ -355,6 +356,22 @@ body {
   background: -moz-linear-gradient(90deg, rgba(221, 161, 94, 1) 0%, rgba(221, 161, 94, 0) 100%);
   background: linear-gradient(90deg, rgba(221, 161, 94, 1) 0%, rgba(221, 161, 94, 0) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#DDA15E", endColorstr="#DDA15E", GradientType=1);
+}
+
+.dark-text {
+  color: black !important;
+
+  strong { color: red }
+
+  .return-button {
+    color: black !important;
+    border-color: black !important;
+
+    &:hover {
+      color: white !important;
+      background: black !important;
+    }
+  }
 }
 
 .pop-up-delete-chronologie {

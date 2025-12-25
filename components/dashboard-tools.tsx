@@ -15,13 +15,14 @@ import { type F_Cour } from "@/types/cour-types"
 type ElementTypes = F_ChronologieElement | F_Cour | F_Artiste | F_Article
 
 type Props = {
+  light: boolean,
   element: ElementTypes
   state: DashboardElementState,
   toggleView: (view: DashboardElementState) => void,
 }
 
 const DashboardTools = forwardRef<HTMLAnchorElement, Props>(
-  ({ element, state, toggleView }, ref) => { 
+  ({ element, state, toggleView, light = false }, ref) => { 
   const [isDeleting, setIsDeleting] = useState<boolean>(state === "delete")
 
   const buttonsRef = useRef<HTMLDivElement>(null)
@@ -30,14 +31,14 @@ const DashboardTools = forwardRef<HTMLAnchorElement, Props>(
 
 
   function prepareDeletion() {
-    let type: "article" | "chronologie" | "cour" | "artiste";
+    let type: "article" | "chronologie" | "cours" | "artiste";
 
     if ( "metier" in element ) {
-      type = "artiste"
+      type = "artistes"
     } else if ( "mouvement" in element ) {
       type = "article"
     } else if ( "subject" in element ) {
-      type = "cour"
+      type = "cours"
     } else {
       type = "chronologie"
     }
@@ -69,7 +70,7 @@ const DashboardTools = forwardRef<HTMLAnchorElement, Props>(
     {
       state === "delete" ?
         // Buttons
-        <section className="pop-up-delete-chronologie">
+        <section className={`pop-up-delete-chronologie ${light ? "" : "dark-text"}`}>
           <p>Est tu sur de vouloir supprimer le mouvement <strong>{"name" in element ? element.name : element.title}</strong> ?</p>
 
           <div className="pop-up-button-container">

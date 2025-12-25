@@ -11,7 +11,7 @@ import Filter from "@/components/filter-component"
 import { type F_Artiste } from "@/types/artiste-types"
 
 export default function ArtistesPage() {
-  const [currentArtistes, setCurrentArtistes] = useState<F_Artiste[]>([])
+  const [currentArtistes, setCurrentArtistes] = useState<F_Artiste[]>(null)
 
   const { loading, fetchResult } = useFetch<F_Artiste[]>(`/artistes`);
 
@@ -19,7 +19,11 @@ export default function ArtistesPage() {
     if ( loading ) return  
     
     if ( fetchResult.status == 200 && fetchResult.data !== null) {
-      setCurrentArtistes(fetchResult.data);
+      if ( fetchResult.data.length > 0 ) {
+        setCurrentArtistes(fetchResult.data);
+      } else {
+        setCurrentArtistes(null);
+      }
     }
   }, [loading, fetchResult])
 

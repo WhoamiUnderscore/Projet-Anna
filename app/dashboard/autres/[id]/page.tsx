@@ -25,7 +25,7 @@ export default function CourPage(){
   const { id } = useParams<{ id: string }>() 
   const { loading, fetchResult, updateData } = useFetch<F_Cour>(`/cours?id=${id}`);
 
-  const editor = useEditor({});
+  const editor = useEditor({ element_name: "cour" });
 
   function prepareUpdate(){
     let markdown_content: string[] = [];
@@ -53,7 +53,7 @@ export default function CourPage(){
   useEffect(() => {
     if ( !fetchResult || !fetchResult.data ) return 
 
-    const savedContent = sessionStorage.getItem("content");
+    const savedContent = sessionStorage.getItem("content-cour");
     let content: (BlockType | string)[] = [];
 
     if (savedContent) {

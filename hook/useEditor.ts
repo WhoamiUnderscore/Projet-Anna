@@ -8,7 +8,6 @@ type BlockType = {
   render: string,
   visible: boolean
 }
-
 type UpdateType = {
   id: string,
   value: string,
@@ -16,6 +15,7 @@ type UpdateType = {
 }
 
 type Props = {
+  element_name: string;
   default_content?: string
 }
 
@@ -30,7 +30,7 @@ export default function useEditor(props: Props) {
   const file_input_ref = useRef<HTMLInputElement>(null);
   const update_textarea_ref = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => console.log(lastUpdateId), [lastUpdateId])
+  // useEffect(() => console.log(lastUpdateId), [lastUpdateId])
 
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function useEditor(props: Props) {
     // ======
 
     if ( blocks.length > 0 ) {
-      window.sessionStorage.setItem("content", JSON.stringify(blocks))
+      window.sessionStorage.setItem(`content-${props.element_name}`, JSON.stringify(blocks))
     }
   },[blocks])
 

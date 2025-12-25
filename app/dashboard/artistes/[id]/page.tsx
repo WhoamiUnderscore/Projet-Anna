@@ -24,7 +24,7 @@ export default function ArtistePage(){
   const { id } = useParams<{ id: string }>() 
   const { loading, fetchResult, updateData } = useFetch<F_Artiste>(`/artistes?id=${id}`);
 
-  const editor = useEditor({});
+  const editor = useEditor({ element_name: "artiste" });
 
   function prepareUpdate(){
     let markdown_content: string[] = [];
@@ -52,7 +52,7 @@ export default function ArtistePage(){
   useEffect(() => {
     if ( !fetchResult || !fetchResult.data ) return 
 
-    const savedContent = sessionStorage.getItem("content");
+    const savedContent = sessionStorage.getItem("content-artiste");
     let content: (BlockType | string)[] = [];
 
     if (savedContent) {

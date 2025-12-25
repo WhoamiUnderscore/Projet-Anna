@@ -25,7 +25,7 @@ export default function ArticlePage(){
   const { id } = useParams<{ id: string }>() 
   const { loading, fetchResult, updateData } = useFetch<F_Article>(`/article?id=${id}`);
 
-  const editor = useEditor({});
+  const editor = useEditor({ element_name: "article" });
 
   function prepareUpdate(){
     let markdown_content: string[] = [];
@@ -53,7 +53,7 @@ export default function ArticlePage(){
   useEffect(() => {
     if ( !fetchResult || !fetchResult.data ) return 
 
-    const savedContent = sessionStorage.getItem("content");
+    const savedContent = sessionStorage.getItem("content-article");
     let content: (BlockType | string)[] = [];
 
     if (savedContent) {

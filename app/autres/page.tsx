@@ -11,7 +11,7 @@ import Filter from "@/components/filter-component"
 import { type F_Cour } from "@/types/cour-types"
 
 export default function CoursPage() {
-  const [currentCours, setCurrentCours] = useState<F_Cour[]>([])
+  const [currentCours, setCurrentCours] = useState<F_Cour[]>(null)
 
   const { loading, fetchResult } = useFetch<F_Cour[]>(`/cours`);
 
@@ -19,7 +19,11 @@ export default function CoursPage() {
     if ( loading ) return  
     
     if ( fetchResult.status == 200 && fetchResult.data !== null ) {
-      setCurrentCours(fetchResult.data);
+      if ( fetchResult.data.length > 0 ) {
+        setCurrentCours(fetchResult.data);
+      } else {
+        setCurrentCours(null);
+      }
     }
   }, [loading, fetchResult])
 
