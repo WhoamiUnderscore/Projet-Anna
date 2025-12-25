@@ -30,7 +30,7 @@ export default function useEditor(props: Props) {
   const file_input_ref = useRef<HTMLInputElement>(null);
   const update_textarea_ref = useRef<HTMLTextAreaElement>(null)
 
-  // useEffect(() => console.log(blocks), [blocks])
+  useEffect(() => console.log(lastUpdateId), [lastUpdateId])
 
 
   useEffect(() => {
@@ -50,10 +50,17 @@ export default function useEditor(props: Props) {
     const domIndex = Array.from(container_ref.current.children)
       .findIndex((el: Element) => el.getAttribute("data-id") === updateValue.id);
 
-    container_ref.current.insertBefore(update_textarea_ref.current, container_ref.current.children[domIndex])
+      const container = container_ref.current;
+      const referenceNode = container.children[domIndex + 1];
 
-    const value = update_textarea_ref.current.value
-    update_textarea_ref.current.value = "";
+      if (referenceNode) {
+        container.insertBefore(update_textarea_ref.current, referenceNode);
+      } else {
+        container.appendChild(update_textarea_ref.current);
+      }
+
+      const value = update_textarea_ref.current.value
+      update_textarea_ref.current.value = "";
     update_textarea_ref.current.value = value; // Positionnate the cursor at the end of the input
     update_textarea_ref.current.style.height = `${update_textarea_ref.current.scrollHeight}px`
     update_textarea_ref.current.focus();
@@ -158,11 +165,21 @@ export default function useEditor(props: Props) {
         visible: false
       }
 
-      setBlocks((prev) => [
-        ...prev.slice(0, blocksIndex+1),
-        newElement,
-        ...prev.slice(blocksIndex+1)
-      ])
+      setBlocks((prev) => {
+        console.log(blocksIndex, prev.length - 1)
+        if ( blocksIndex === prev.length - 1 ) {
+          return[
+            ...prev,
+            newElement,
+          ]
+        } else {
+          return[
+            ...prev.slice(0, blocksIndex+1),
+            newElement,
+            ...prev.slice(blocksIndex+1)
+          ]
+        } 
+      })
 
       setUpdateValue({
         id: newElement.id,
@@ -198,7 +215,7 @@ export default function useEditor(props: Props) {
     let id = uuidv4();
 
     if ( lastUpdateId ) {
-      index_update = blocks.findIndex(b => b.id == lastUpdateId)
+      index_update = blocks.findIndex(b => b.id === lastUpdateId)
     }
 
     setAllFiles((prev) => [...prev, {
@@ -218,18 +235,18 @@ export default function useEditor(props: Props) {
         visible: true
       };
 
-      if ( index_update ) {
-      return [
-        ...prev.slice(0, index_update + 1),
-        newElement,
-        ...prev.slice(index_update+1),
-      ]
+      if ( index_update !== undefined ) {
+        return [
+          ...prev.slice(0, index_update + 1),
+          newElement,
+          ...prev.slice(index_update+1),
+        ]
+      } else {
+        return [
+          ...prev,
+          newElement
+        ]
       }
-
-      return [
-        ...prev,
-        newElement
-      ]
     });
 
     file_input_ref.current.value = "";

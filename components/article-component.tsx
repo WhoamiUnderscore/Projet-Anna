@@ -102,6 +102,16 @@ export function ArticleForm({
 
   const { postDatas, updateData } = useFetch()
 
+  useEffect(() => {
+    if ( newArticle.mouvement !== "" ) return 
+
+    setNewArticle((prev: F_NewArticle) => ({
+      ...prev,
+      mouvement
+    }))
+  }, []) 
+
+
   function isArticleFilled() {
     const { title, artiste, date, image, mouvement } = newArticle;
 
@@ -113,12 +123,14 @@ export function ArticleForm({
 
     if ( !image ) return
 
+    let valid_mouvement = mouvement.charAt(0).toUpperCase() + mouvement.slice(1);
+
     let validData: B_NewArticle = {
       title,
       artiste,
       date,
       image,
-      mouvement,
+      mouvement: valid_mouvement,
       content
     } 
 

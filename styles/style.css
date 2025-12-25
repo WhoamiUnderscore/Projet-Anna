@@ -763,6 +763,11 @@ body {
     img {
       width: 100%;
     }
+
+    a {
+      color: blue;
+      text-decoration: underline;
+    }
   }
 }
 
