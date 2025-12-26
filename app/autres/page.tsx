@@ -11,7 +11,7 @@ import Filter from "@/components/filter-component"
 import { type F_Cour } from "@/types/cour-types"
 
 export default function CoursPage() {
-  const [currentCours, setCurrentCours] = useState<F_Cour[]>(null)
+  const [currentCours, setCurrentCours] = useState<F_Cour[] | null>(null)
 
   const { loading, fetchResult } = useFetch<F_Cour[]>(`/cours`);
 

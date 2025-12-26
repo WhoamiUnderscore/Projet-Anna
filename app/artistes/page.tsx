@@ -11,7 +11,7 @@ import Filter from "@/components/filter-component"
 import { type F_Artiste } from "@/types/artiste-types"
 
 export default function ArtistesPage() {
-  const [currentArtistes, setCurrentArtistes] = useState<F_Artiste[]>(null)
+  const [currentArtistes, setCurrentArtistes] = useState<F_Artiste[] | null>(null)
 
   const { loading, fetchResult } = useFetch<F_Artiste[]>(`/artistes`);
 

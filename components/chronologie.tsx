@@ -140,6 +140,7 @@ function ChronologieElement({
       {
         dashboard && elementState !== "edit" && 
           <DashboardTools 
+            light={true}
             toggleView={toggleView} 
             state={elementState} 
             element={element} 

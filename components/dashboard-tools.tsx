@@ -15,10 +15,10 @@ import { type F_Cour } from "@/types/cour-types"
 type ElementTypes = F_ChronologieElement | F_Cour | F_Artiste | F_Article
 
 type Props = {
-  light: boolean,
   element: ElementTypes
   state: DashboardElementState,
   toggleView: (view: DashboardElementState) => void,
+  light?: boolean,
 }
 
 const DashboardTools = forwardRef<HTMLAnchorElement, Props>(
@@ -31,7 +31,7 @@ const DashboardTools = forwardRef<HTMLAnchorElement, Props>(
 
 
   function prepareDeletion() {
-    let type: "article" | "chronologie" | "cours" | "artiste";
+    let type: "article" | "chronologie" | "cours" | "artistes";
 
     if ( "metier" in element ) {
       type = "artistes"
